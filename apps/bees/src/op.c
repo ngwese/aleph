@@ -31,6 +31,7 @@ const op_id_t userOpTypes[NUM_USER_OP_TYPES] = {
   eOpDiv,
   eOpDivr,
   eOpFade,
+  eOpFrames,
   eOpGate,
   eOpMonomeGridRaw, // "grid"
   eOpHid,
@@ -294,6 +295,11 @@ const op_desc_t op_registry[numOpClasses] = {
     .name = "DIVR",
     .size = sizeof(op_divr_t),
     .init = &op_divr_init,
+    .deinit = NULL
+  },  {
+    .name = "FRAMES",
+    .size = sizeof(op_frames_t),
+    .init = &op_frames_init,
     .deinit = NULL
   },
 };

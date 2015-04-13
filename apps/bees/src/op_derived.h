@@ -21,6 +21,7 @@
 #include "ops/op_divr.h"
 #include "ops/op_enc.h"
 #include "ops/op_fade.h"
+#include "ops/op_frames.h"
 #include "ops/op_gate.h"
 #include "ops/op_hid_word.h"
 #include "ops/op_history.h"
