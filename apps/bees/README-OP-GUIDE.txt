@@ -10,15 +10,25 @@ Linux: http://www.atmel.com/tools/ATMELAVRTOOLCHAINFORLINUX.aspx (get 32bit)
 Windows: http://atmel.com (get AVR Stuio)
 
 
-An operator is a control module that can be dynamically created within Bees. It has INPUTS and OUTPUTS that accept and send parameter data, respectively. Bees networks are created by connecting OUTPUTS of operators to other operators' INPUTS.
+An operator is a control module that can be dynamically created within
+Bees. It has INPUTS and OUTPUTS that accept and send parameter data,
+respectively. Bees networks are created by connecting OUTPUTS of
+operators to other operators' INPUTS.
 
-Operators typically transform input somehow. But they can also modify the screen, talk USB, run timers, etc. For the scope of this introduction we'll simply do some math on the inputs. See exisitng operators for examples of other tasks.
+Operators typically transform input somehow. But they can also modify
+the screen, talk USB, run timers, etc. For the scope of this
+introduction we'll simply do some math on the inputs. See exisitng
+operators for examples of other tasks.
 
 
 
-Here are the steps to create a new operator. We'll be making an operator to crossfade between two input values.
+Here are the steps to create a new operator. We'll be making an
+operator to crossfade between two input values.
 
-The goal: three inputs A, B, and X. One output VAL. X is 0-128. When X is 0, VAL is A. When X equals 100, VAL equals B. When X equals 64, VAL is a split mix of A and B. Intermediate values will linearly mix A and B to VAL.
+The goal: three inputs A, B, and X. One output VAL. X is 0-128. When X
+is 0, VAL is A. When X equals 100, VAL equals B. When X equals 64, VAL
+is a split mix of A and B. Intermediate values will linearly mix A and
+B to VAL.
 
 
 
@@ -92,4 +102,5 @@ Changed internal variables for A, B, X
 
 Finally, where the functionality happens. See code for inline comments.
 
-Of fundamental importance are the functions op_fade_in_a() etc. This is where something happens when input is received.
+Of fundamental importance are the functions op_fade_in_a() etc. This
+is where something happens when input is received.
