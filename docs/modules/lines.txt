@@ -1,42 +1,67 @@
 ====== lines ======
 
-lines is a dual delay line with complex modulation matrix possibilities.
+lines is a dual delay line with complex modulation matrix
+possibilities.
 
 ==== architecture ====
 
 === routing ===
 
-each delay line accepts input from any hardware input channel and from any delay line output.
+each delay line accepts input from any hardware input channel and from
+any delay line output.
 
-each delay line output is routed through a state variable filter with an arbitrary mix of lowpass, bandpass, highpass and notch outputs.
+each delay line output is routed through a state variable filter with
+an arbitrary mix of lowpass, bandpass, highpass and notch outputs.
 
-each filter output is mixed arbitrarily with the unfiltered delay line output to an output bus
+each filter output is mixed arbitrarily with the unfiltered delay line
+output to an output bus
 
-each output bus is mixed arbitrarily to each hardware output channel, and also to each delay line input.
+each output bus is mixed arbitrarily to each hardware output channel,
+and also to each delay line input.
 
 === delay line implementation === 
 
-it is beneficial to understand each delay line as a combination of three elements:
+it is beneficial to understand each delay line as a combination of
+three elements:
 
-  - an audio buffer of a certain length // (currently 32 seconds, will increase shortly) //
+  - an audio buffer of a certain length // (currently 32 seconds, will
+    increase shortly) //
   - a "write head"
   - a "read head"
 
-each "head" is actually a phasor: a position value which is updated each sample. when the position reaches the end of the buffer (or the position specified by the "loop" parameter, if that comes first), it will wrap to 0.
+each "head" is actually a phasor: a position value which is updated
+each sample. when the position reaches the end of the buffer (or the
+position specified by the "loop" parameter, if that comes first), it
+will wrap to 0.
 
-by setting the "delay" parameter, you are asking the read head to move to a position behind the write head by a given offset. this results in an echo. 
+by setting the "delay" parameter, you are asking the read head to move
+to a position behind the write head by a given offset. this results in
+an echo.
 
-the "run" parameters tell the read/write heads to start or stop moving completely.
+the "run" parameters tell the read/write heads to start or stop moving
+completely.
 
-the "pos" parameters set the position of the read/write heads directly.
+the "pos" parameters set the position of the read/write heads
+directly.
 
-the "loop" parameter tells the read and write heads where to wrap to zero.
+the "loop" parameter tells the read and write heads where to wrap to
+zero.
 
-additionally, the "writeN" and "preN" parameters specifify amplitudes with which to write new content and preserve old content. 
+additionally, the "writeN" and "preN" parameters specifify amplitudes
+with which to write new content and preserve old content.
 
-by manipulating these last parameter sets, one can create all sorts of looping / overdubbing algorithms. 
+by manipulating these last parameter sets, one can create all sorts of
+looping / overdubbing algorithms.
 
-a final note on implementation: these delay lines are currently //uninterpolated.// this means that the rate of each phasor can only be an integer division of the sample rate. we're working on proper interpolation (it's a minor numerical challenge on the blackfin,) and for now there is a weird system where you can specify arbitrary "mul" and "div" rates, which respectively cause the read phasor to jump by intervals of "mul" samples, and/or hold/interpolate each value for "div" samples. this allows for a limited form of lo-fi pitch-shifting by low-order harmonic ratios.
+a final note on implementation: these delay lines are currently
+//uninterpolated.// this means that the rate of each phasor can only
+be an integer division of the sample rate. we're working on proper
+interpolation (it's a minor numerical challenge on the blackfin,) and
+for now there is a weird system where you can specify arbitrary "mul"
+and "div" rates, which respectively cause the read phasor to jump by
+intervals of "mul" samples, and/or hold/interpolate each value for
+"div" samples. this allows for a limited form of lo-fi pitch-shifting
+by low-order harmonic ratios.
 
 
 ==== parameters ====
