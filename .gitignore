@@ -1,0 +1,13 @@
+*.o
+*.d
+*.ldr
+*.dsc
+*.hex
+*.elf
+*.bin
+*_desc_build
+*.lss
+*.sym
+*.map
+
+.#*
