@@ -1,5 +1,5 @@
 
-module_name = dsyn
+module_name = aleph-dsyn
 
 audio = ../../dsp
 bfin = ../../bfin_lib/src
