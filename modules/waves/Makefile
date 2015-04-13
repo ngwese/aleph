@@ -1,5 +1,5 @@
 
-module_name = waves
+module_name = aleph-waves
 
 include version.mk
 version = $(maj).$(min).$(rev)
