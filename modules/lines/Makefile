@@ -1,4 +1,4 @@
-module_name = lines
+module_name = aleph-lines
 
 audio = ../../dsp
 bfin = ../../bfin_lib/src
