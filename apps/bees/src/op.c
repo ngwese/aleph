@@ -27,6 +27,7 @@ const op_id_t userOpTypes[NUM_USER_OP_TYPES] = {
   eOpBars,
   eOpBignum,
   eOpBits,
+  eOpChange,
   eOpDelay,
   eOpDiv,
   eOpDivr,
@@ -300,6 +301,11 @@ const op_desc_t op_registry[numOpClasses] = {
     .name = "FRAMES",
     .size = sizeof(op_frames_t),
     .init = &op_frames_init,
+    .deinit = NULL
+  },  {
+    .name = "CHANGE",
+    .size = sizeof(op_change_t),
+    .init = &op_change_init,
     .deinit = NULL
   },
 };

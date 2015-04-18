@@ -140,13 +140,17 @@ GATHER: like ROUTING, except only outputs that are connected to the selected inp
 
 --- storage
 
-there are always a fixed number of presets, located in RAM.
-scenes are stored on the sdcard and are limited only by the filesystem.
-one scene is stored on internal flash instead, and is loaded at startup.
+there are always a fixed number of presets, located in RAM.  scenes
+are stored on the sdcard and are limited only by the filesystem.  one
+scene is stored on internal flash instead, and is loaded at startup.
 
 
 ---- recall
 
-recalling a scene triggers the loading of the module named in that scene. this includes a check between the version number stored in the scene and that reported by the module; bees will issue a warning if version numbers are mismatched.
+recalling a scene triggers the loading of the module named in that
+scene. this includes a check between the version number stored in the
+scene and that reported by the module; bees will issue a warning if
+version numbers are mismatched.
 
-after loading the hopefully-appropriate module, all parameter values are re-sent to the audio processor.
+after loading the hopefully-appropriate module, all parameter values
+are re-sent to the audio processor.
