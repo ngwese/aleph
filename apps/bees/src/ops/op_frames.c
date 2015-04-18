@@ -142,6 +142,7 @@ static void do_in_value(op_frames_t* frames, const io_t v, const u8 chan) {
   else {
       frames->in[chan] = v;
   }
+  maybe_key(frames, frames->in[chan], chan);
 }
 
 static void do_clear(op_frames_t* frames, const io_t v) {
@@ -167,22 +168,18 @@ static void op_frames_in_acc(op_frames_t* frames, const io_t v) {
 
 static void op_frames_in_a(op_frames_t* frames, const io_t v) {
   do_in_value(frames, v, CHAN_A);
-  maybe_key(frames, v, CHAN_A);
 }
 
 static void op_frames_in_b(op_frames_t* frames, const io_t v) {
   do_in_value(frames, v, CHAN_B);
-  maybe_key(frames, v, CHAN_B);
 }
 
 static void op_frames_in_c(op_frames_t* frames, const io_t v) {
   do_in_value(frames, v, CHAN_C);
-  maybe_key(frames, v, CHAN_C);
 }
 
 static void op_frames_in_d(op_frames_t* frames, const io_t v) {
   do_in_value(frames, v, CHAN_D);
-  maybe_key(frames, v, CHAN_D);
 }
 
 static void do_mute(op_frames_t* frames, const io_t v, const u8 chan) {
@@ -220,11 +217,11 @@ static void op_frames_in_key(op_frames_t* frames, const io_t v) {
       print_dbg(" at: 0x");
       print_dbg_hex(frames->index);
       // store abcd values at index
-      for (u8 c = 0; c < OP_FRAMES_SIZE; c++) {
-        frames->keys[frames->index][c] = frames->in[c];
-        print_dbg(" 0x");
-        print_dbg_hex(frames->in[c]);
-      }
+      // for (u8 c = 0; c < OP_FRAMES_SIZE; c++) {
+      //   frames->keys[frames->index][c] = frames->in[c];
+      //   print_dbg(" 0x");
+      //   print_dbg_hex(frames->in[c]);
+      // }
     }
   }
   else {
