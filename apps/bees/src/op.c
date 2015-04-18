@@ -298,7 +298,7 @@ const op_desc_t op_registry[numOpClasses] = {
     .init = &op_divr_init,
     .deinit = NULL
   },  {
-    .name = "bp",
+    .name = "BP",
     .size = sizeof(op_bp_t),
     .init = &op_bp_init,
     .deinit = NULL
