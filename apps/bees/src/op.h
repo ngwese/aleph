@@ -83,7 +83,7 @@ typedef enum {
   eOpMonomeArc,
   eOpFade,
   eOpDivr,
-  eOpFrames,
+  eOpBP,
   eOpChange,
   //  eOpMidiBend,
   //  eOpMidiTouch,

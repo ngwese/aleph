@@ -47,6 +47,7 @@ CSRCS += \
 	$(APP_DIR)/src/ops/op_bars.c \
 	$(APP_DIR)/src/ops/op_bignum.c \
 	$(APP_DIR)/src/ops/op_bits.c \
+	$(APP_DIR)/src/ops/op_bp.c \
 	$(APP_DIR)/src/ops/op_cascades.c \
 	$(APP_DIR)/src/ops/op_change.c \
 	$(APP_DIR)/src/ops/op_delay.c \
@@ -54,7 +55,6 @@ CSRCS += \
 	$(APP_DIR)/src/ops/op_divr.c \
 	$(APP_DIR)/src/ops/op_enc.c \
 	$(APP_DIR)/src/ops/op_fade.c \
-	$(APP_DIR)/src/ops/op_frames.c \
 	$(APP_DIR)/src/ops/op_gate.c \
 	$(APP_DIR)/src/ops/op_hid_word.c \
 	$(APP_DIR)/src/ops/op_history.c \

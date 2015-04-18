@@ -27,12 +27,12 @@ const op_id_t userOpTypes[NUM_USER_OP_TYPES] = {
   eOpBars,
   eOpBignum,
   eOpBits,
+  eOpBP,
   eOpChange,
   eOpDelay,
   eOpDiv,
   eOpDivr,
   eOpFade,
-  eOpFrames,
   eOpGate,
   eOpMonomeGridRaw, // "grid"
   eOpHid,
@@ -298,9 +298,9 @@ const op_desc_t op_registry[numOpClasses] = {
     .init = &op_divr_init,
     .deinit = NULL
   },  {
-    .name = "FRAMES",
-    .size = sizeof(op_frames_t),
-    .init = &op_frames_init,
+    .name = "bp",
+    .size = sizeof(op_bp_t),
+    .init = &op_bp_init,
     .deinit = NULL
   },  {
     .name = "CHANGE",
