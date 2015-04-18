@@ -21,6 +21,9 @@ static void op_bp_in_wrap(op_bp_t* op, const io_t v);
 static void op_bp_in_key(op_bp_t* op, const io_t v);
 static void op_bp_in_del(op_bp_t* op, const io_t v);
 static void op_bp_in_clear(op_bp_t* op, const io_t v);
+static void op_bp_in_min(op_bp_t* op, const io_t v);
+static void op_bp_in_max(op_bp_t* op, const io_t v);
+static void op_bp_in_clip(op_bp_t* op, const io_t v);
 
 static void op_bp_in_a(op_bp_t* op, const io_t v);
 static void op_bp_in_b(op_bp_t* op, const io_t v);
@@ -42,29 +45,35 @@ static void op_bp_do_current(op_bp_t* bp);
 static void op_bp_do_output(op_bp_t* bp);
 
 // bp_list operations
-static void bp_list_insert(bp_list_t* l, const u8 index, const io_t pos, const io_t v);
-static void bp_list_pop(bp_list_t* l, const u8 index);
+static void bp_list_insert(bp_list_t* l, const io_t pos, const io_t v);
 static void bp_list_pop_nearest(bp_list_t* l, const io_t pos);
-static void bp_list_move_nearest(bp_list_t* l, const io_t pos);
+static u8 bp_list_replace_nearest(bp_list_t* l, const io_t pos, const io_t v);
 static void bp_list_merge_nearest(bp_list_t* l, const io_t pos, const io_t v);
 static void bp_list_clear(bp_list_t* l);
+static bool bp_list_is_empty(bp_list_t* l);
+static bool bp_list_is_full(bp_list_t* l);
+static s8 bp_list_lower_index(bp_list_t* l, const io_t pos);
+static s8 bp_list_nearest_index(bp_list_t* l, const io_t pos);
 
 static bool bp_list_break_between(bp_list_t* l, const io_t pos_a, const io_t pos_b);
-static io_t bp_list_interp(bp_list_t* l, const io_t pos, const io_t mode);
+static io_t bp_list_interp(bp_list_t* l, const io_t pos, const io_t mode, const bool wrap);
 
 //-------------------------------------------------
 //---- static vars
-static const char* op_bp_instring  = "POS\0    JUMP\0   WRAP\0   KEY\0    DEL\0    CLEAR\0  A\0      B\0      C\0      D\0      MODEA\0  MODEB\0  MODEC\0  MODED\0";
+static const char* op_bp_instring  = "POS\0    JUMP\0   WRAP\0   KEY\0    DEL\0    CLEAR\0  MIN\0    MAX\0     CLIP\0   A\0      B\0      C\0      D\0      MODEA\0  MODEB\0  MODEC\0  MODED\0";
 static const char* op_bp_outstring = "A\0      B\0      C\0      D\0      TA\0     TB\0     TC\0     TD\0      ";
 static const char* op_bp_opstring  = "BP";
 
-static op_in_fn op_bp_in_fn[14] = {
+static op_in_fn op_bp_in_fn[17] = {
   (op_in_fn)&op_bp_in_pos,
   (op_in_fn)&op_bp_in_jump,
   (op_in_fn)&op_bp_in_wrap,
   (op_in_fn)&op_bp_in_key,
   (op_in_fn)&op_bp_in_del,
   (op_in_fn)&op_bp_in_clear,
+  (op_in_fn)&op_bp_in_min,
+  (op_in_fn)&op_bp_in_max,
+  (op_in_fn)&op_bp_in_clip,
   (op_in_fn)&op_bp_in_a,
   (op_in_fn)&op_bp_in_b, 
   (op_in_fn)&op_bp_in_c,
@@ -80,7 +89,7 @@ static op_in_fn op_bp_in_fn[14] = {
 void op_bp_init(void* mem) {
   u8 c;
   op_bp_t* op = (op_bp_t*)mem;
-  op->super.numInputs = 14;
+  op->super.numInputs = 17;
   op->super.numOutputs = 8;
 
   for (c = 0; c < op->super.numOutputs; c++) {
@@ -104,14 +113,17 @@ void op_bp_init(void* mem) {
   op->in_val[3] = &(op->key);
   op->in_val[4] = &(op->del);
   op->in_val[5] = &(op->clear);
-  op->in_val[6] = &(op->in[0]);
-  op->in_val[7] = &(op->in[1]);
-  op->in_val[8] = &(op->in[2]);
-  op->in_val[9] = &(op->in[3]);
-  op->in_val[10] = &(op->mode[0]);
-  op->in_val[11] = &(op->mode[1]);
-  op->in_val[12] = &(op->mode[2]);
-  op->in_val[13] = &(op->mode[3]);
+  op->in_val[6] = &(op->min);
+  op->in_val[7] = &(op->max);
+  op->in_val[8] = &(op->clip);
+  op->in_val[9] = &(op->in[0]);
+  op->in_val[10] = &(op->in[1]);
+  op->in_val[11] = &(op->in[2]);
+  op->in_val[12] = &(op->in[3]);
+  op->in_val[13] = &(op->mode[0]);
+  op->in_val[14] = &(op->mode[1]);
+  op->in_val[15] = &(op->mode[2]);
+  op->in_val[16] = &(op->mode[3]);
 
   op->pos = 0;
   op->jump = 0;
@@ -119,6 +131,9 @@ void op_bp_init(void* mem) {
   op->key = 0;
   op->del = 0;
   op->clear = 0;
+  op->min = OP_MIN_VAL;
+  op->max = OP_MAX_VAL;
+  op->clip = 0;
   op->prev_pos = 0;
 
   for (c = 0; c < OP_BP_CHANS; c++) {
@@ -127,41 +142,129 @@ void op_bp_init(void* mem) {
     op->current[c] = 0;
   }
 
+  // TODO: allow for clearing to an initial value (say OP_MAX_VAL / 2 for unipolar CV usage)
   op_bp_do_clear(op);
 }
 
 //-------------------------------------------------
 //---- static bp list func define
-static void bp_list_insert(bp_list_t* l, const u8 index, const io_t pos, const io_t v) {
-  if (index < 0 || index > INDEX_MAX)
-    return; // nothing to do
-  // TODO
+
+static inline io_t bp_list_pos_at(bp_list_t* l, const u8 idx) {
+  return l->keys[idx].pos;
 }
 
-static void bp_list_pop(bp_list_t* l, const u8 index)  {
-  if (index < 0 || index > l->last)
-    return; // nothing to do
-  // TODO
+static inline io_t bp_list_value_at(bp_list_t* l, const u8 idx) {
+  return l->keys[idx].value;
 }
 
-static void bp_list_pop_nearest(bp_list_t* l, const io_t pos)  {
-  // TODO
+static inline bool bp_list_is_full(bp_list_t* l) {
+  return l->last == INDEX_MAX;
 }
 
-static void bp_list_move_nearest(bp_list_t* l, const io_t pos)  {
-  // TODO
+static inline bool bp_list_is_empty(bp_list_t* l) {
+  return l->last == -1;
 }
 
-static void bp_list_merge_nearest(bp_list_t* l, const io_t pos, const io_t v)  {
-  // TODO
+static inline void bp_list_clear_index(bp_list_t* l, const u8 index) {
+  l->keys[index].pos = OP_MAX_VAL;
+  l->keys[index].value = 0;
 }
 
 static void bp_list_clear(bp_list_t* l)  {
-  l->last = 0;
+  l->last = -1;
   for (u8 i = 0; i < OP_BP_KEY_COUNT; i++) {
-    l->keys[i].pos = 0;
-    l->keys[i].value = 0;
+    bp_list_clear_index(l, i);
   }
+}
+
+static void bp_list_insert(bp_list_t* l, const io_t pos, const io_t v) {
+  // inserts the given break point, pushing existing values up and out
+  if (bp_list_is_empty(l)) {
+    // empty; insert at head
+    l->last = 0;
+    l->keys[0].pos = pos;
+    l->keys[0].value = v;
+  }
+  else {
+    u8 lower = bp_list_lower_index(l, pos);
+    if (lower == INDEX_MAX) {
+      // tail; hit capacity etc, just reset tail, last stays the same
+      l->keys[INDEX_MAX].pos = pos;
+      l->keys[INDEX_MAX].value = v;
+    }
+    else {
+      // middle, shuffle keys up
+      u8 upper = l->last < INDEX_MAX ? l->last : INDEX_MAX;
+      for (u8 i = lower + 1; i <= upper; i++) { // FIXME: < upper or <= upper?
+        l->keys[i].pos = l->keys[i + 1].pos;
+        l->keys[i].value = l->keys[i + 1].value;
+      }
+      l->last++;
+    }
+  }
+}
+
+static s8 bp_list_lower_index(bp_list_t* l, const io_t pos) {
+  // search list return index of breakpoint just lower than pos
+  if (bp_list_is_empty(l))
+    return -1;
+
+  s8 i = 0; // MAINT: check this logic
+  for (; i <= l->last; i++)
+    if (pos < bp_list_pos_at(l, i))
+      break;
+  return i;
+}
+
+static s8 bp_list_nearest_index(bp_list_t *l, const io_t pos) {
+  s8 idx = bp_list_lower_index(l, pos);
+  if (idx == -1)
+    // nothing in the list
+    return -1;
+  if (l->last == 0)
+    // one thing in the list
+    return idx;
+  if (l->last == idx)
+    // already at the end
+    return idx;
+  // 
+  io_t dlow = pos - bp_list_pos_at(l, idx);
+  io_t dhigh = bp_list_pos_at(l, idx + 1) - pos;
+  if (dhigh < dlow)
+    // snap high
+    return idx + 1;
+  
+  return idx;
+}
+
+static void bp_list_pop_nearest(bp_list_t* l, const io_t pos)  {
+  if (!bp_list_is_empty(l)) {
+    s8 index = bp_list_nearest_index(l, pos);
+    if (index != l->last) {
+      // ripple down
+      for (u8 i = index; i < l->last; i++) {
+        l->keys[i].pos = l->keys[i + 1].pos;
+        l->keys[i].value = l->keys[i + 1].value;
+      }
+    }
+    bp_list_clear_index(l, l->last);
+    l->last--;
+  }
+}
+
+static u8 bp_list_replace_nearest(bp_list_t* l, const io_t pos, const io_t v)  {
+  // FIXME: doesn't handle -1 return from nearest
+  u8 idx = bp_list_nearest_index(l, pos);
+  l->keys[idx].pos = pos;
+  l->keys[idx].value = v;
+  return idx;
+}
+
+static void bp_list_merge_nearest(bp_list_t* l, const io_t pos, const io_t v)  {
+  if (bp_list_is_full(l))
+    bp_list_replace_nearest(l, pos, v);
+  else
+    bp_list_insert(l, pos, v);
 }
 
 static bool bp_list_break_between(bp_list_t* l, const io_t pos_a, const io_t pos_b) {
@@ -169,9 +272,33 @@ static bool bp_list_break_between(bp_list_t* l, const io_t pos_a, const io_t pos
   return false;
 }
 
-static io_t bp_list_interp(bp_list_t* l, const io_t pos, const io_t mode) {
-  // TODO
-  return 0;
+static io_t bp_list_interp(bp_list_t* l, const io_t pos, const io_t mode, const bool wrap) {
+  // TODO: handle mode
+  io_t p1, v1, p2, v2;
+
+  if (bp_list_is_empty(l))
+    return 0; // this should match the default key value
+
+  s8 lower = bp_list_lower_index(l, pos);
+  if (lower < 0) { // before first key
+    if (wrap) lower = l->last; // grab highest index
+    else return bp_list_value_at(l, 0); // no wrap; hold the value of the first key
+  }
+  p1 = bp_list_pos_at(l, lower);
+  v1 = bp_list_value_at(l, lower);
+
+  u8 higher = lower + 1;
+  if (higher > l->last) { // after last key
+    if (wrap) higher = 0; // grab lowest index
+    else return bp_list_value_at(l, l->last); // no wrap; hold value of last key
+  }
+  p2 = bp_list_pos_at(l, higher);
+  v2 = bp_list_value_at(l, higher);
+
+  // FIXME: this doesn't work if pos is not between p1 and p2 (i.e. one or both wrapped, test the one key case)
+  io_t v = v1 + (v2 - v1) * ((pos - p1) / (p2 - p1));
+
+  return v;
 }
 
 
@@ -186,10 +313,16 @@ static void op_bp_do_clear(op_bp_t* op) {
   print_dbg(" ...done.");
 }
 
+static inline io_t op_bp_clip_value(op_bp_t *op, io_t v) {
+  return v < op->min ? op->min : (v > op->max ? op->max : v);
+}
+
 static void op_bp_do_current(op_bp_t* op) {
   // compute and store the current output values
+  bool wrap = op->wrap == 1;
   for (u8 c = 0; c < OP_BP_CHANS; c++) {
-    op->current[c] = bp_list_interp(&(op->keys[c]), op->pos, op->mode[c]);
+    io_t v = bp_list_interp(&(op->keys[c]), op->pos, op->mode[c], wrap);
+    op->current[c] = op->clip ? op_bp_clip_value(op, v) : v;
   }
 }
 
@@ -239,13 +372,53 @@ static void op_bp_in_wrap(op_bp_t* op, const io_t v) {
   }
 }
 
+static bool op_bp_do_key(op_bp_t* op, const u8 chan) {
+  bp_list_t* l = &(op->keys[chan]);
+  io_t out_val;
+  bool did_key;
+
+  s8 idx = bp_list_nearest_index(l, op->pos);
+  if (idx >= 0 && bp_list_pos_at(l, idx) == op->pos) {
+    // we are on a key, just modify it
+    out_val = op_sadd(l->keys[idx].value, op->in[chan]);
+    l->keys[idx].value = out_val;
+    did_key = false;
+  }
+  else {
+    // we are not on a key, just insert/move it keeping the value at this position the same
+    out_val = bp_list_interp(l, op->pos, op->mode[chan], op->wrap);
+    bp_list_merge_nearest(l, op->pos, out_val);
+    did_key = true;
+  }
+  
+  op->current[chan] = out_val;
+  net_activate(op->outs[chan], op->current[chan], op); // MAINT: should this trigger?
+
+  return did_key;
+}
+
 static void op_bp_in_key(op_bp_t* op, const io_t v) {
   // range: (0, 4) specific channel to key (at current pos)
   // 0 is all channels (at current pos)
   if (v >= 0 && v <= OP_BP_CHANS) {
     op->key = v;
   }
-  // TODO
+
+  if (v == 0) {
+    for (u8 c = 0; c < OP_BP_CHANS; c++)
+      op_bp_do_key(op, c);
+  }
+  else {
+    op_bp_do_key(op, v);
+  }
+}
+
+static void op_bp_do_del(op_bp_t* op, const u8 chan) {
+  bp_list_t* l = &(op->keys[chan]);
+
+  bp_list_pop_nearest(l, op->pos);
+  op->current[chan] = bp_list_interp(l, op->pos, op->mode[chan], op->wrap);  
+  net_activate(op->outs[chan], op->current[chan], op); // MAINT: should this trigger?
 }
 
 static void op_bp_in_del(op_bp_t* op, const io_t v) {
@@ -254,7 +427,13 @@ static void op_bp_in_del(op_bp_t* op, const io_t v) {
   if (v >= 0 && v <= OP_BP_CHANS) {
     op->del = v;
   }
-  // TODO
+  if (v == 0) {
+    for (u8 c = 0; c < OP_BP_CHANS; c++)
+      op_bp_do_del(op, c);
+  }
+  else {
+    op_bp_do_del(op, v);
+  }
 }
 
 static void op_bp_in_clear(op_bp_t* op, const io_t v) {
@@ -271,26 +450,46 @@ static void op_bp_in_clear(op_bp_t* op, const io_t v) {
   }
 }
 
+static void op_bp_in_min(op_bp_t* op, const io_t v) {
+  op->min = v;
+  if (op->min >= op->max) {
+    op->min = op->max - 1;
+  }
+}
+
+static void op_bp_in_max(op_bp_t* op, const io_t v) {
+  op->min = v;
+  if (op->min >= op->max) {
+    op->max = op->min + 1;
+  }
+}
+
+static void op_bp_in_clip(op_bp_t* op, const io_t v) {
+  if (v > 0) {
+    if (op->clip == 0)
+      op->clip = 1;
+  }
+  else {
+    if (op->clip > 0)
+      op->clip = 0;
+  }
+}
+
 static void op_bp_in_a(op_bp_t* op, const io_t v) {
   op->in[CHAN_A] = v;
-  // TODO
 }
 
 static void op_bp_in_b(op_bp_t* op, const io_t v) {
   op->in[CHAN_B] = v;
-  // TODO
 }
 
 static void op_bp_in_c(op_bp_t* op, const io_t v) {
   op->in[CHAN_C] = v;
-  // TODO
 }
 
 static void op_bp_in_d(op_bp_t* op, const io_t v) {
   op->in[CHAN_D] = v;
-  // TODO
 }
-
 
 static void op_bp_in_mode_a(op_bp_t* op, const io_t v) {
   op->mode[CHAN_A] = 0;
@@ -317,6 +516,7 @@ static void op_bp_in_mode_d(op_bp_t* op, const io_t v) {
 
 static u8* bp_list_pickle(const bp_list_t* l, u8* start) {
   u8* dst = pickle_io(l->last, start);
+  //dst = pickle_io(l->clear_value, dst);
   for (u8 i = 0; i < INDEX_MAX; i++) {
     dst = pickle_io(l->keys[i].pos, dst);
     dst = pickle_io(l->keys[i].value, dst);
@@ -326,6 +526,7 @@ static u8* bp_list_pickle(const bp_list_t* l, u8* start) {
 
 static const u8* bp_list_unpickle(const u8* start, bp_list_t* l) {
   const u8* src = unpickle_io(start, &(l->last));
+  //src = unpickle_io(src, &(l->clear_value));
   for (u8 i = 0; i < INDEX_MAX; i++) {
     src = unpickle_io(src, &(l->keys[i].pos));
     src = unpickle_io(src, &(l->keys[i].value));
@@ -337,6 +538,9 @@ u8* op_bp_pickle(op_bp_t* op, u8* dst) {
   // skipping key and step as they are triggers
   dst = pickle_io(op->pos, dst);
   dst = pickle_io(op->wrap, dst);
+  dst = pickle_io(op->min, dst);
+  dst = pickle_io(op->max, dst);
+  dst = pickle_io(op->clip, dst);
   dst = pickle_io(op->in[0], dst);
   dst = pickle_io(op->in[1], dst);
   dst = pickle_io(op->in[2], dst);
@@ -359,6 +563,9 @@ u8* op_bp_pickle(op_bp_t* op, u8* dst) {
 const u8* op_bp_unpickle(op_bp_t* op, const u8* src) {
   src = unpickle_io(src, &(op->pos));
   src = unpickle_io(src, &(op->wrap));
+  src = unpickle_io(src, &(op->min));
+  src = unpickle_io(src, &(op->max));
+  src = unpickle_io(src, &(op->clip));
   src = unpickle_io(src, &(op->in[0]));
   src = unpickle_io(src, &(op->in[1]));
   src = unpickle_io(src, &(op->in[2]));

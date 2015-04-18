@@ -15,6 +15,7 @@ typedef struct bp_value_struct {
 
 typedef struct bp_list_struct {
   u8 last;
+  //io_t clear_value;
   bp_value_t keys[OP_BP_KEY_COUNT];
 } bp_list_t;
 
@@ -28,9 +29,12 @@ typedef struct op_bp_struct {
   volatile io_t key;
   volatile io_t del;
   volatile io_t clear;
+  volatile io_t min;
+  volatile io_t max;
+  volatile io_t clip;
   volatile io_t in[OP_BP_CHANS];
   volatile io_t mode[OP_BP_CHANS];
-  volatile io_t * in_val[14]; // step, index, trig, key, mute
+  volatile io_t * in_val[17]; // step, index, trig, key, mute
 
   op_out_t outs[8]; // a, b, c, d, ta, tb, tc, td
 
