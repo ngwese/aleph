@@ -177,7 +177,7 @@ static void ww_refresh_mono(void);
 //----- extern function definition
 void op_ww_init(void* mem) {
   u8 i1,i2;
-  //  print_dbg("\r\n op_ww_init ");
+  //  //print_dbg("\r\n op_ww_init ");
   op_ww_t* op = (op_ww_t*)mem;
 
   // superclass functions
@@ -299,7 +299,7 @@ static void op_ww_in_focus(op_ww_t* op, const io_t v) {
   }
 
   u8 i1;
-  // print_dbg("\r\n// monome connect /////////////////"); 
+  // //print_dbg("\r\n// monome connect /////////////////"); 
   keycount_pos = 0;
   key_count = 0;
 #if BEEKEEP
@@ -307,14 +307,14 @@ static void op_ww_in_focus(op_ww_t* op, const io_t v) {
   SIZE = monome_size_x();
 #endif
   LENGTH = SIZE - 1;
-  // print_dbg("\r monome size: ");
-  // print_dbg_ulong(SIZE);
+  // //print_dbg("\r monome size: ");
+  // //print_dbg_ulong(SIZE);
 #if BEEKEEP
 #else
   VARI = monome_is_vari();
 #endif
-  // print_dbg("\r monome vari: ");
-  // print_dbg_ulong(VARI);
+  // //print_dbg("\r monome vari: ");
+  // //print_dbg_ulong(VARI);
 
   if(VARI) re = &ww_refresh;
   else re = &ww_refresh_mono;
@@ -351,10 +351,10 @@ static void op_ww_in_clock(op_ww_t* op, const io_t v) {
       else
         series_next++;
 
-      // print_dbg("\r\nSERIES next ");
-      // print_dbg_ulong(series_next);
-      // print_dbg(" pos ");
-      // print_dbg_ulong(series_pos);
+      // //print_dbg("\r\nSERIES next ");
+      // //print_dbg_ulong(series_next);
+      // //print_dbg(" pos ");
+      // //print_dbg_ulong(series_pos);
 
       count = 0;
       for(i1=0;i1<16;i1++) {
@@ -430,8 +430,8 @@ static void op_ww_in_clock(op_ww_t* op, const io_t v) {
     }
     else if(w.wp[pattern].step_mode == mRandom) { // RANDOM
       next_pos = (rnd() % (w.wp[pattern].loop_len + 1)) + w.wp[pattern].loop_start;
-      // print_dbg("\r\nnext pos:");
-      // print_dbg_ulong(next_pos);
+      // //print_dbg("\r\nnext pos:");
+      // //print_dbg_ulong(next_pos);
       if(next_pos > LENGTH) next_pos -= LENGTH + 1;
       cut_pos = 1;
     }
@@ -568,8 +568,8 @@ static void op_ww_in_clock(op_ww_t* op, const io_t v) {
   if(tr[3] != op->outs[3]) net_activate(op->outs[3], tr[3], op);
   if(cv0 != op->outs[4]) net_activate(op->outs[4], cv0, op);
   if(cv1 != op->outs[5]) net_activate(op->outs[5], cv1, op);
-  // print_dbg("\r\n pos: ");
-  // print_dbg_ulong(pos);
+  // //print_dbg("\r\n pos: ");
+  // //print_dbg_ulong(pos);
 
 }
 
@@ -585,10 +585,10 @@ static void op_ww_in_param(op_ww_t* op, const io_t v) {
   // PARAM POT INPUT
   if(param_accept && edit_prob) {
     *param_dest8 = op->param >> 4; // scale to 0-255;
-    // print_dbg("\r\nnew prob: ");
-    // print_dbg_ulong(*param_dest8);
-    // print_dbg("\t" );
-    // print_dbg_ulong(adc[1]);
+    // //print_dbg("\r\nnew prob: ");
+    // //print_dbg_ulong(*param_dest8);
+    // //print_dbg("\t" );
+    // //print_dbg_ulong(adc[1]);
   }
   else if(param_accept) {
     *param_dest = op->param;
@@ -600,8 +600,8 @@ static void op_ww_in_param(op_ww_t* op, const io_t v) {
     if(i != screll_pos) {
       screll_pos = i;
       dirty++;
-      // print_dbg("\r screll pos: ");
-      // print_dbg_ulong(screll_pos);
+      // //print_dbg("\r screll pos: ");
+      // //print_dbg_ulong(screll_pos);
     }
   }
 
@@ -650,13 +650,13 @@ static void op_ww_poll_handler(void* op) {
             next_pattern = x;
             dirty++;
 
-            // print_dbg("\r\n saved pattern: ");
-            // print_dbg_ulong(x);
+            // //print_dbg("\r\n saved pattern: ");
+            // //print_dbg_ulong(x);
           }
         }
 
-        // print_dbg("\rlong press: "); 
-        // print_dbg_ulong(held_keys[i1]);
+        // //print_dbg("\rlong press: "); 
+        // //print_dbg_ulong(held_keys[i1]);
       }
     }
     
@@ -672,12 +672,12 @@ static void op_ww_handler(op_monome_t* op_monome, u32 edata) {
   u8 x, y, z, index, i1, found, count;
   s16 delta;
   monome_grid_key_parse_event_data(edata, &x, &y, &z);
-  // print_dbg("\r\n monome event; x: "); 
-  // print_dbg_hex(x); 
-  // print_dbg("; y: 0x"); 
-  // print_dbg_hex(y); 
-  // print_dbg("; z: 0x"); 
-  // print_dbg_hex(z);
+  // //print_dbg("\r\n monome event; x: "); 
+  // //print_dbg_hex(x); 
+  // //print_dbg("; y: 0x"); 
+  // //print_dbg_hex(y); 
+  // //print_dbg("; z: 0x"); 
+  // //print_dbg_hex(z);
 
   //// TRACK LONG PRESSES
   index = y*16 + x;
@@ -708,10 +708,10 @@ static void op_ww_handler(op_monome_t* op_monome, u32 edata) {
           }
         }
       }
-      // print_dbg("\r\nfast press: ");
-      // print_dbg_ulong(index);
-      // print_dbg(": ");
-      // print_dbg_ulong(key_times[index]);
+      // //print_dbg("\r\nfast press: ");
+      // //print_dbg_ulong(index);
+      // //print_dbg(": ");
+      // //print_dbg_ulong(key_times[index]);
     }
   }
 
@@ -723,8 +723,8 @@ static void op_ww_handler(op_monome_t* op_monome, u32 edata) {
   if(y == 1) {
     keycount_pos += z * 2 - 1;
     if(keycount_pos < 0) keycount_pos = 0;
-    // print_dbg("\r\nkeycount: "); 
-    // print_dbg_ulong(keycount_pos);
+    // //print_dbg("\r\nkeycount: "); 
+    // //print_dbg_ulong(keycount_pos);
 
     if(keycount_pos == 1 && z) {
       if(key_alt == 0) {
@@ -780,8 +780,8 @@ static void op_ww_handler(op_monome_t* op_monome, u32 edata) {
       if(w.wp[pattern].loop_dir == 2)
         w.wp[pattern].loop_len = (LENGTH - w.wp[pattern].loop_start) + w.wp[pattern].loop_end + 1;
 
-      // print_dbg("\r\nloop_len: "); 
-      // print_dbg_ulong(w.wp[pattern].loop_len);
+      // //print_dbg("\r\nloop_len: "); 
+      // //print_dbg_ulong(w.wp[pattern].loop_len);
     }
   }
 
@@ -955,8 +955,8 @@ static void op_ww_handler(op_monome_t* op_monome, u32 edata) {
           if(index < 24 && y<8) {
             for(i1=0;i1<16;i1++)
               w.wp[pattern].cv_values[i1] = SCALES[index][i1];
-            print_dbg("\rNEW SCALE ");
-            print_dbg_ulong(index);
+            //print_dbg("\rNEW SCALE ");
+            //print_dbg_ulong(index);
           }
 
           scale_select = 0;
@@ -987,8 +987,8 @@ static void op_ww_handler(op_monome_t* op_monome, u32 edata) {
           else if(y==7 && key_alt && edit_cv_value != -1 && x==LENGTH) {
             param_accept = z;
             param_dest = &(w.wp[pattern].cv_values[edit_cv_value]);
-            // print_dbg("\r\nparam: ");
-            // print_dbg_ulong(*param_dest);
+            // //print_dbg("\r\nparam: ");
+            // //print_dbg_ulong(*param_dest);
           }
           else if((y == 5 || y == 6) && z && x<4 && edit_cv_step != -1) {
             delta = 0;

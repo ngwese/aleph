@@ -65,7 +65,7 @@ void net_hid_list_remove(op_hid_t* op) {
     hl.num = 0;
   } else {
     if(op->prev == NULL || op->next == NULL) {
-      print_dbg("\r\n error unlinking hid operator");
+      //print_dbg("\r\n error unlinking hid operator");
       return;
     }
     op->prev->next = op->next;
@@ -81,12 +81,12 @@ void net_hid_list_remove(op_hid_t* op) {
 void net_handle_hid_packet() { //u32 data) {
   u32 i;
   op_hid_t* op = hl.top;
-  //  print_dbg("\r\n net_handle_hid_packet, num ops: ");
-  // print_dbg_ulong(hl.num);
-  //  print_dbg("\r\n bees: hid handler. ");
-  //  print_dbg(" ; dirty: 0x");
-  //  print_dbg_hex(hid_get_frame_dirty());
-  //  print_dbg_hex(data)
+  //  //print_dbg("\r\n net_handle_hid_packet, num ops: ");
+  // //print_dbg_ulong(hl.num);
+  //  //print_dbg("\r\n bees: hid handler. ");
+  //  //print_dbg(" ; dirty: 0x");
+  //  //print_dbg_hex(hid_get_frame_dirty());
+  //  //print_dbg_hex(data)
   
   for(i=0; i < hl.num; ++i) {
     (*(op->handler))(op);

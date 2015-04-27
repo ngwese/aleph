@@ -11,6 +11,13 @@
 #define CHAN_C 2
 #define CHAN_D 3
 
+#define CHAN_A_MSK (1 << CHAN_A)
+#define CHAN_B_MSK (1 << CHAN_B)
+#define CHAN_C_MSK (1 << CHAN_C)
+#define CHAN_D_MSK (1 << CHAN_D)
+
+#define CHAN_ALL_MSK (CHAN_A_MSK | CHAN_B_MSK | CHAN_C_MSK | CHAN_D_MSK)
+
 #define INDEX_MAX (OP_BP_KEY_COUNT - 1)
 
 //-------------------------------------------------
@@ -45,7 +52,7 @@ static void op_bp_do_current(op_bp_t* bp);
 static void op_bp_do_output(op_bp_t* bp);
 
 // bp_list operations
-static void bp_list_insert(bp_list_t* l, const io_t pos, const io_t v);
+static u8 bp_list_insert(bp_list_t* l, const io_t pos, const io_t v);
 static void bp_list_pop_nearest(bp_list_t* l, const io_t pos);
 static u8 bp_list_replace_nearest(bp_list_t* l, const io_t pos, const io_t v);
 static void bp_list_merge_nearest(bp_list_t* l, const io_t pos, const io_t v);
@@ -177,20 +184,31 @@ static void bp_list_clear(bp_list_t* l)  {
   }
 }
 
-static void bp_list_insert(bp_list_t* l, const io_t pos, const io_t v) {
+static u8 bp_list_insert(bp_list_t* l, const io_t pos, const io_t v) {
   // inserts the given break point, pushing existing values up and out
   if (bp_list_is_empty(l)) {
     // empty; insert at head
     l->last = 0;
     l->keys[0].pos = pos;
     l->keys[0].value = v;
+    print_dbg("\r\n    bp: list_insert at head (was empty)");
   }
   else {
     u8 lower = bp_list_lower_index(l, pos);
-    if (lower == INDEX_MAX) {
+    if (lower == l->last && l->last < INDEX_MAX) {
+      // tail; append
+      l->last++;
+      l->keys[l->last].pos = pos;
+      l->keys[l->last].value = v;
+      print_dbg("\r\n    bp: list_insert append to tail, last: 0x");
+      print_dbg_hex(l->last);
+    }
+    else if (lower == INDEX_MAX) {
       // tail; hit capacity etc, just reset tail, last stays the same
       l->keys[INDEX_MAX].pos = pos;
       l->keys[INDEX_MAX].value = v;
+      print_dbg("\r\n    bp: list_insert reset tail (max index), last: 0x");
+      print_dbg_hex(l->last);
     }
     else {
       // middle, shuffle keys up
@@ -199,20 +217,38 @@ static void bp_list_insert(bp_list_t* l, const io_t pos, const io_t v) {
         l->keys[i].pos = l->keys[i + 1].pos;
         l->keys[i].value = l->keys[i + 1].value;
       }
+      // insert key
+      l->keys[lower].pos = pos;
+      l->keys[lower].value = v;
       l->last++;
+      print_dbg("\r\n    bp: list_insert middle i: 0x");
+      print_dbg_hex(lower);
+      print_dbg(" last: 0x");
+      print_dbg_hex(l->last);
     }
   }
+  return l->last;
 }
 
 static s8 bp_list_lower_index(bp_list_t* l, const io_t pos) {
-  // search list return index of breakpoint just lower than pos
-  if (bp_list_is_empty(l))
-    return -1;
+  s8 i = -1;
 
-  s8 i = 0; // MAINT: check this logic
-  for (; i <= l->last; i++)
-    if (pos < bp_list_pos_at(l, i))
-      break;
+  // search list return index of breakpoint just lower than pos
+  if (bp_list_is_empty(l)) {
+    i = -1;
+  }
+  else {
+    i = 0; // MAINT: check this logic
+    for (; i <= l->last; i++)
+      if (pos < bp_list_pos_at(l, i))
+        break;
+  }
+
+  print_dbg("\r\n    bp: list_lower_index, pos: 0x");
+  print_dbg_hex(pos);
+  print_dbg(" i: 0x");
+  print_dbg_hex(i);
+
   return i;
 }
 
@@ -261,10 +297,14 @@ static u8 bp_list_replace_nearest(bp_list_t* l, const io_t pos, const io_t v)  {
 }
 
 static void bp_list_merge_nearest(bp_list_t* l, const io_t pos, const io_t v)  {
-  if (bp_list_is_full(l))
-    bp_list_replace_nearest(l, pos, v);
-  else
+  if (bp_list_is_full(l)) {
+    u8 idx = bp_list_replace_nearest(l, pos, v);
+    print_dbg("\r\n    bp: list_merge; replaced nearest 0x");
+    print_dbg_hex(idx);
+  }
+  else {
     bp_list_insert(l, pos, v);
+  }
 }
 
 static bool bp_list_break_between(bp_list_t* l, const io_t pos_a, const io_t pos_b) {
@@ -274,15 +314,22 @@ static bool bp_list_break_between(bp_list_t* l, const io_t pos_a, const io_t pos
 
 static io_t bp_list_interp(bp_list_t* l, const io_t pos, const io_t mode, const bool wrap) {
   // TODO: handle mode
-  io_t p1, v1, p2, v2;
+  io_t p1, v1, p2, v2, out;
 
-  if (bp_list_is_empty(l))
+  if (bp_list_is_empty(l)) {
+    print_dbg("\r\n    bp: list_interp; is empty");
     return 0; // this should match the default key value
+  }
 
   s8 lower = bp_list_lower_index(l, pos);
   if (lower < 0) { // before first key
     if (wrap) lower = l->last; // grab highest index
-    else return bp_list_value_at(l, 0); // no wrap; hold the value of the first key
+    else {
+      out = bp_list_value_at(l, 0); // no wrap; hold the value of the first keys
+      print_dbg("\r\n    bp: list_interp; hold first => 0x");
+      print_dbg_hex(out);
+      return out;
+    } 
   }
   p1 = bp_list_pos_at(l, lower);
   v1 = bp_list_value_at(l, lower);
@@ -290,15 +337,21 @@ static io_t bp_list_interp(bp_list_t* l, const io_t pos, const io_t mode, const 
   u8 higher = lower + 1;
   if (higher > l->last) { // after last key
     if (wrap) higher = 0; // grab lowest index
-    else return bp_list_value_at(l, l->last); // no wrap; hold value of last key
+    else {
+      out = bp_list_value_at(l, l->last); // no wrap; hold value of last key
+      print_dbg("\r\n    bp: list_interp; hold last => 0x");
+      print_dbg_hex(out);
+      return out;
+    }
   }
   p2 = bp_list_pos_at(l, higher);
   v2 = bp_list_value_at(l, higher);
 
   // FIXME: this doesn't work if pos is not between p1 and p2 (i.e. one or both wrapped, test the one key case)
-  io_t v = v1 + (v2 - v1) * ((pos - p1) / (p2 - p1));
-
-  return v;
+  out = v1 + (v2 - v1) * ((pos - p1) / (p2 - p1));
+  print_dbg("\r\n    bp: list_interp; interp => 0x");
+  print_dbg_hex(out);
+  return out;
 }
 
 
@@ -321,12 +374,19 @@ static void op_bp_do_current(op_bp_t* op) {
   // compute and store the current output values
   bool wrap = op->wrap == 1;
   for (u8 c = 0; c < OP_BP_CHANS; c++) {
+    print_dbg("\r\n bp: do_current");
+    print_dbg(" c: 0x");
+    print_dbg_hex(c);
     io_t v = bp_list_interp(&(op->keys[c]), op->pos, op->mode[c], wrap);
     op->current[c] = op->clip ? op_bp_clip_value(op, v) : v;
+    print_dbg("\r\n...current is 0x:");
+    print_dbg_hex(op->current[c]);
   }
 }
 
 static void op_bp_do_output(op_bp_t* op) {
+  print_dbg("\r\n bp: do_output\r\n");
+
   // FIXME: need to sort these min/max
   io_t low_pos = op->prev_pos;
   io_t high_pos = op->pos;
@@ -347,6 +407,10 @@ static void op_bp_in_pos(op_bp_t* op, const io_t v) {
   if (v >= OP_MIN_VAL) {
     op->prev_pos = op->pos;
     op->pos = v;
+    print_dbg("\r\n bp: in_pos, prev: 0x");
+    print_dbg_hex(op->prev_pos);
+    print_dbg(" pos: 0x");
+    print_dbg_hex(op->pos);
     op_bp_do_current(op);
     op_bp_do_output(op);
   }
@@ -373,25 +437,40 @@ static void op_bp_in_wrap(op_bp_t* op, const io_t v) {
 }
 
 static bool op_bp_do_key(op_bp_t* op, const u8 chan) {
+  print_dbg("\r\n bp: do_key");
+
   bp_list_t* l = &(op->keys[chan]);
   io_t out_val;
   bool did_key;
 
-  s8 idx = bp_list_nearest_index(l, op->pos);
-  if (idx >= 0 && bp_list_pos_at(l, idx) == op->pos) {
-    // we are on a key, just modify it
-    out_val = op_sadd(l->keys[idx].value, op->in[chan]);
-    l->keys[idx].value = out_val;
-    did_key = false;
+  if (bp_list_is_empty(l)) {
+    print_dbg(" empty, first key");
+    out_val = op->in[chan];
+    bp_list_insert(l, op->pos, out_val);
+    did_key = true;
   }
   else {
+    s8 idx = bp_list_nearest_index(l, op->pos);
+    if (idx >= 0 && bp_list_pos_at(l, idx) == op->pos) {
+    // we are on a key, just modify it
+      out_val = op_sadd(l->keys[idx].value, op->in[chan]);
+      l->keys[idx].value = out_val;
+      did_key = false;
+      print_dbg(" on key; acc: 0x");
+      print_dbg_hex(out_val);
+    }
+    else {
     // we are not on a key, just insert/move it keeping the value at this position the same
-    out_val = bp_list_interp(l, op->pos, op->mode[chan], op->wrap);
-    bp_list_merge_nearest(l, op->pos, out_val);
-    did_key = true;
+      print_dbg(" insert/move key");
+      out_val = bp_list_interp(l, op->pos, op->mode[chan], op->wrap);
+      bp_list_merge_nearest(l, op->pos, out_val);
+      did_key = true;
+    }
   }
   
   op->current[chan] = out_val;
+  print_dbg("\r\n bp: do_key done; outputting: 0x");
+  print_dbg_hex(op->current[chan]);
   net_activate(op->outs[chan], op->current[chan], op); // MAINT: should this trigger?
 
   return did_key;
@@ -400,16 +479,19 @@ static bool op_bp_do_key(op_bp_t* op, const u8 chan) {
 static void op_bp_in_key(op_bp_t* op, const io_t v) {
   // range: (0, 4) specific channel to key (at current pos)
   // 0 is all channels (at current pos)
-  if (v >= 0 && v <= OP_BP_CHANS) {
+  if (v >= 0 && v <= CHAN_ALL_MSK) {
+    print_dbg("\r\n bp: in_key setting key mask to: 0x");
+    print_dbg_hex(v);
     op->key = v;
   }
-
-  if (v == 0) {
-    for (u8 c = 0; c < OP_BP_CHANS; c++)
-      op_bp_do_key(op, c);
-  }
-  else {
-    op_bp_do_key(op, v);
+  if (op->key > 0) {
+    for (u8 c = 0; c < OP_BP_CHANS; c++) {
+      if (op->key & (1 << c)) {
+        print_dbg("\r\n bp: in_key doing c: 0x");
+        print_dbg_hex(c);
+        op_bp_do_key(op, c);
+      }
+    }
   }
 }
 
@@ -424,28 +506,35 @@ static void op_bp_do_del(op_bp_t* op, const u8 chan) {
 static void op_bp_in_del(op_bp_t* op, const io_t v) {
   // range: (0, 4) specific channel breakpoint to delete (at current pos)
   // 0 is all breakpoints (at current pos)
-  if (v >= 0 && v <= OP_BP_CHANS) {
+  if (v >= 0 && v <= CHAN_ALL_MSK) {
+    print_dbg("\r\n bp: in_del setting del mask to: 0x");
+    print_dbg_hex(v);
     op->del = v;
   }
-  if (v == 0) {
-    for (u8 c = 0; c < OP_BP_CHANS; c++)
-      op_bp_do_del(op, c);
-  }
-  else {
-    op_bp_do_del(op, v);
+  if (op->del > 0) {
+    for (u8 c = 0; c < OP_BP_CHANS; c++) {
+      if (op->del & (1 << c)) {
+        print_dbg("\r\n bp: in_del doing c: 0x");
+        print_dbg_hex(c);
+        op_bp_do_del(op, c);
+      }
+    }
   }
 }
 
 static void op_bp_in_clear(op_bp_t* op, const io_t v) {
   // range: (0, 4) specific channel to key (at current pos)
   // 0 is all channels (at current pos)
-  if (v >= 0 && v <= OP_BP_CHANS) {
+  if (v >= 0 && v <= CHAN_ALL_MSK) {
     op->clear = v;
-    if (v == 0) {
-      op_bp_do_clear(op);
-    }
-    else {
-      bp_list_clear(&(op->keys[op->clear]));
+    if (op->clear > 0) {
+      for (u8 c = 0; c < OP_BP_CHANS; c++) {
+        if (op->clear & (1 << c)) {
+          print_dbg("\r\n bp: in_clear doing c: 0x");
+          print_dbg_hex(c);
+          bp_list_clear(&(op->keys[c]));
+        }
+      }
     }
   }
 }
@@ -476,19 +565,31 @@ static void op_bp_in_clip(op_bp_t* op, const io_t v) {
 }
 
 static void op_bp_in_a(op_bp_t* op, const io_t v) {
+  print_dbg("\r\n bp: in_a v: 0x");
+  print_dbg_hex(v);
   op->in[CHAN_A] = v;
+  if (op->key & CHAN_A_MSK) op_bp_do_key(op, CHAN_A);
 }
 
 static void op_bp_in_b(op_bp_t* op, const io_t v) {
+  print_dbg("\r\n bp: in_b v: 0x");
+  print_dbg_hex(v);
   op->in[CHAN_B] = v;
+  if (op->key & CHAN_B_MSK) op_bp_do_key(op, CHAN_B);
 }
 
 static void op_bp_in_c(op_bp_t* op, const io_t v) {
+  print_dbg("\r\n bp: in_c v: 0x");
+  print_dbg_hex(v);
   op->in[CHAN_C] = v;
+  if (op->key & CHAN_C_MSK) op_bp_do_key(op, CHAN_C);
 }
 
 static void op_bp_in_d(op_bp_t* op, const io_t v) {
+  print_dbg("\r\n bp: in_d v: 0x");
+  print_dbg_hex(v);
   op->in[CHAN_D] = v;
+  if (op->key & CHAN_D_MSK) op_bp_do_key(op, CHAN_D);
 }
 
 static void op_bp_in_mode_a(op_bp_t* op, const io_t v) {

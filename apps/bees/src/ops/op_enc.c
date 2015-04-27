@@ -121,48 +121,48 @@ static void op_enc_perform(op_enc_t* enc) {
     max32 = (s32)(enc->max);
   }
   
-  /* /\* print_dbg("\r\n calculating enc output... min: 0x"); *\/ */
-  /* /\* print_dbg_hex(min32); *\/ */
-  /* /\* print_dbg(" , max: "); *\/ */
-  /* /\* print_dbg_hex(max32); *\/ */
-  /* /\* print_dbg(" , val: "); *\/ */
-  /* /\* print_dbg_hex(enc->val32); *\/ */
+  /* /\* //print_dbg("\r\n calculating enc output... min: 0x"); *\/ */
+  /* /\* //print_dbg_hex(min32); *\/ */
+  /* /\* //print_dbg(" , max: "); *\/ */
+  /* /\* //print_dbg_hex(max32); *\/ */
+  /* /\* //print_dbg(" , val: "); *\/ */
+  /* /\* //print_dbg_hex(enc->val32); *\/ */
 
   #if 0
   if (enc->wrap) { // wrapping...
     // if value needs wrapping, output the applied difference
     while (enc->val32 > max32) {
 
-      print_dbg(" ... wrapping high... ");
+      //print_dbg(" ... wrapping high... ");
 
       dif = min32 - max32;
 
       if(dif == 0) { dif = -1; }
-      /* print_dbg(" , dif: "); */
-      /* print_dbg_hex(dif); */
+      /* //print_dbg(" , dif: "); */
+      /* //print_dbg_hex(dif); */
 
       wrap += dif;
       enc->val32 = enc->val32 + dif;
 
-      /* print_dbg(" , new val: "); */
-      /* print_dbg_hex(enc->val32); */
+      /* //print_dbg(" , new val: "); */
+      /* //print_dbg_hex(enc->val32); */
 
     }
     while (enc->val32 < min32) { 
-      /* print_dbg(" ... wrapping low... "); */
+      /* //print_dbg(" ... wrapping low... "); */
       
       dif = max32 - min32;
       if(dif == 0) { dif = 1; }
 
-      /* print_dbg(" , dif: "); */
-      /* print_dbg_hex(dif); */
+      /* //print_dbg(" , dif: "); */
+      /* //print_dbg_hex(dif); */
 
 
       wrap += dif;
       enc->val32 = enc->val32 + dif;
 
-  /* print_dbg(" , new val: "); */
-  /* print_dbg_hex(enc->val32); */
+  /* //print_dbg(" , new val: "); */
+  /* //print_dbg_hex(enc->val32); */
 
     }
     enc->val = op_from_int(enc->val32);
@@ -216,10 +216,10 @@ const u8* op_enc_unpickle(op_enc_t* enc, const u8* src) {
 }
 
 void op_enc_sys_input(op_enc_t* enc, s8 v) {
-  /* print_dbg("\r\n enc sys input, address: 0x"); */
-  /* print_dbg_hex((u32)enc); */
-  /* print_dbg(" , input value: 0x"); */
-  /* print_dbg_hex((u32)v); */
+  /* //print_dbg("\r\n enc sys input, address: 0x"); */
+  /* //print_dbg_hex((u32)enc); */
+  /* //print_dbg(" , input value: 0x"); */
+  /* //print_dbg_hex((u32)v); */
   // use saturating add. have to explicitly check for "would-be overflow" in wrap mode with max val.
   //  enc->val = op_sadd(enc->val, op_mul(enc->step, op_from_int(v)));
   /// HACK: assuming the io_t is small enough t

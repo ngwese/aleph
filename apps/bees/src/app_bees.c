@@ -52,35 +52,35 @@ static char versionString[12] = VERSIONSTRING;
 // allocate memory.
 void app_init(void) {
 
-  print_dbg("\r\n preset_init...");  
+  //print_dbg("\r\n preset_init...");  
   presets_init();
 
   // this must come after preset init!
   // uses preset data when adding system ops...
-  print_dbg("\r\n net_init... ");
+  //print_dbg("\r\n net_init... ");
   net_init();
 
-  print_dbg("\r\n scene_init...");
+  //print_dbg("\r\n scene_init...");
   scene_init();
 
-  print_dbg("\r\n files_init...");
+  //print_dbg("\r\n files_init...");
   files_init();
 
   /// WARNING: initialization order is important.
 
-  print_dbg("\r\n render_init...");
+  //print_dbg("\r\n render_init...");
   render_init();
 
   // initialize flash-management buffers
-  print_dbg("\r\n flash_bees_init...");
+  //print_dbg("\r\n flash_bees_init...");
   flash_bees_init();
 }
 
 // this is called from main event handler
 u8 app_launch(u8 firstrun) {
 
-  print_dbg("\r\n launching app with firstrun: ");
-  print_dbg_ulong(firstrun);
+  //print_dbg("\r\n launching app with firstrun: ");
+  //print_dbg_ulong(firstrun);
 
   //  net_print();
   
@@ -93,7 +93,7 @@ u8 app_launch(u8 firstrun) {
 
   if(firstrun) {
     render_boot("launching app, first run");
-    print_dbg("\r\n first run, writing nonvolatile data...");
+    //print_dbg("\r\n first run, writing nonvolatile data...");
     
     ///... write param scaler data
     // this is done at firstrun instead of being linked statically,
@@ -101,7 +101,7 @@ u8 app_launch(u8 firstrun) {
     render_boot("init param scaling data...");
     flash_init_scaler_data();
 
-    print_dbg("\r\n first run, try and load default DSP");
+    //print_dbg("\r\n first run, try and load default DSP");
     render_boot("launching default DSP");
 
     //// startup using default DSP name
@@ -110,7 +110,7 @@ u8 app_launch(u8 firstrun) {
     render_boot("waiting for DSP init...");
     bfin_wait_ready();
 
-    //    print_dbg("\r\n enable DSP audio...");
+    //    //print_dbg("\r\n enable DSP audio...");
     render_boot("enabling audio");
     bfin_enable();
     
@@ -125,8 +125,8 @@ u8 app_launch(u8 firstrun) {
     /// read the default scene from sd card
     /// this also attempts to load associated .ldr    
     render_boot("reading default scene");
-    print_dbg("\r\n loading default scene. current module name from sceneData: ");
-    print_dbg(sceneData->desc.moduleName);
+    //print_dbg("\r\n loading default scene. current module name from sceneData: ");
+    //print_dbg(sceneData->desc.moduleName);
 
     scene_read_default();
 
@@ -138,14 +138,14 @@ u8 app_launch(u8 firstrun) {
 
   // init pages (fill graphics buffers)
   render_boot("initializing gfx");
-  print_dbg("\r\n pages_init...");
+  //print_dbg("\r\n pages_init...");
   pages_init();
 
-  print_dbg("\r\n play_init...");
+  //print_dbg("\r\n play_init...");
   play_init();
 
   // enable timers
-  print_dbg("\r\n enable app timers...");
+  //print_dbg("\r\n enable app timers...");
   render_boot("enabling app timers");
   init_app_timers();
 
@@ -153,7 +153,7 @@ u8 app_launch(u8 firstrun) {
   //  gpio_set_gpio_pin(POWER_CTL_PIN);
 
   // assign app event handlers
-  print_dbg("\r\n assigning handlers... ");
+  //print_dbg("\r\n assigning handlers... ");
   render_boot("assigning UI handlers");
   assign_bees_event_handlers();
 

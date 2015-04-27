@@ -27,10 +27,10 @@ static u8 initFlag = 0;
 //---- extern funcs
 
 s32 scaler_note_val(void* scaler, io_t in) {
-  print_dbg("\r\n requesting note_scaler value for input: 0x"); 
-  print_dbg_hex((u32)in);
-  print_dbg(" ; result: 0x");
-  print_dbg_hex(tabVal[(u16)((u16)in >> inRshift)] );
+  //print_dbg("\r\n requesting note_scaler value for input: 0x"); 
+  //print_dbg_hex((u32)in);
+  //print_dbg(" ; result: 0x");
+  //print_dbg_hex(tabVal[(u16)((u16)in >> inRshift)] );
   //  u16 uin = BIT_ABS_16((s16)in);
   if(in < 0) { in = 0; }
   return tabVal[(u16)((u16)in >> inRshift)];
@@ -51,7 +51,7 @@ void scaler_note_init(void* scaler) {
   // HACK: we are doing this from the svf scaler, so don't want a warning.
   // check descriptor
   /* if( sc->desc->type != eParamTypeNote) { */
-  /*   print_dbg("\r\n !!! warning: wrong param type for note scaler"); */
+  /*   //print_dbg("\r\n !!! warning: wrong param type for note scaler"); */
   /* } */
   
   // init flag for static data
@@ -80,8 +80,8 @@ io_t scaler_note_in(void* scaler, s32 x) {
   s32 ju = tabSize - 1;
   s32 jm;
 
-  print_dbg("\r\n scaler_note_in, x: 0x");
-  print_dbg_hex(x);
+  //print_dbg("\r\n scaler_note_in, x: 0x");
+  //print_dbg_hex(x);
 
   while(ju - jl > 1) {
     jm = (ju + jl) >> 1;

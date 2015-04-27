@@ -107,7 +107,7 @@ static void handle_Switch7(s32 data) {
 
 static void handle_MonomeConnect(s32 data) {
   net_monome_connect();
-  print_dbg("\r\n received MonomeConnect event in BEES");
+  //print_dbg("\r\n received MonomeConnect event in BEES");
 }
 
 static void handle_MonomeDisconnect(s32 data) { 
@@ -120,13 +120,13 @@ static void handle_MonomeGridKey(s32 data) {
   /// FIXME: we need to differentiate between multiple devices.
   /// of course, first we need USB hub support.
   
-  print_dbg("\r\n monome grid key event in BEES.");
-  print_dbg("\r\n monomeOpFocus: 0x");
-  print_dbg_hex((u32)monomeOpFocus);
-  print_dbg("; monomeOpFocus->op: 0x");
-  print_dbg_hex((u32)(monomeOpFocus->op));
-  print_dbg("; monome_grid_key_handler: 0x");
-  print_dbg_hex((u32)(monome_grid_key_handler));
+  //print_dbg("\r\n monome grid key event in BEES.");
+  //print_dbg("\r\n monomeOpFocus: 0x");
+  //print_dbg_hex((u32)monomeOpFocus);
+  //print_dbg("; monomeOpFocus->op: 0x");
+  //print_dbg_hex((u32)(monomeOpFocus->op));
+  //print_dbg("; monome_grid_key_handler: 0x");
+  //print_dbg_hex((u32)(monome_grid_key_handler));
 
   (*monome_grid_key_handler)(monomeOpFocus, data);
 }
@@ -264,8 +264,8 @@ io_t scale_knob_value(io_t val) {
   if(val < 0) {
     ret = BIT_NEG_ABS_16(ret);
   }
-  //  print_dbg(", result: 0x");
-  //  print_dbg_hex(ret);
+  //  //print_dbg(", result: 0x");
+  //  //print_dbg_hex(ret);
 
   return ret;
 }

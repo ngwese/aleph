@@ -43,7 +43,7 @@ static op_in_fn op_marc_in_fn[5] = {
 //-------------------------------------------------
 //----- extern function definition
 void op_marc_init(void* mem) {
-  //  print_dbg("\r\n op_marc_init ");
+  //  //print_dbg("\r\n op_marc_init ");
   op_marc_t* op = (op_marc_t*)mem;
 
 
@@ -153,10 +153,10 @@ static void op_marc_handler(op_monome_t* op_monome, u32 data) {
 
   monome_ring_enc_parse_event_data(data, &n, &v);
   
-  print_dbg("\r\n op_marc_handler received event; n: 0x");
-  print_dbg_hex(n);
-  print_dbg("; v: 0x");
-  print_dbg_hex(v);
+  //print_dbg("\r\n op_marc_handler received event; n: 0x");
+  //print_dbg_hex(n);
+  //print_dbg("; v: 0x");
+  //print_dbg_hex(v);
 
   net_activate(op->outs[0], (io_t)n, op);
   net_activate(op->outs[1], (io_t)v, op);

@@ -34,20 +34,20 @@ s32 scaler_integrator_val(void* scaler, io_t in) {
 
 void scaler_integrator_str(char* dst, void* scaler,  io_t in) {
   //  u16 uin = (in < 0) ? 0 : ((u16)in >> inRshift) ;
-  /* print_dbg("\r\n ingegrator_str() , input: 0x"); */
-  /* print_dbg_hex(in); */
-  /* print_dbg(" , index : 0x"); */
-  /* print_dbg_hex(uin); */
-  /* print_dbg(" , val : 0x"); */
-  /* print_dbg_hex(tabRep[uin]); */
+  /* //print_dbg("\r\n ingegrator_str() , input: 0x"); */
+  /* //print_dbg_hex(in); */
+  /* //print_dbg(" , index : 0x"); */
+  /* //print_dbg_hex(uin); */
+  /* //print_dbg(" , val : 0x"); */
+  /* //print_dbg_hex(tabRep[uin]); */
 
   ///// HACK:
   // trying non-table solution... slow :S
   /// in this test, using known magic-number multiplier.
   /// should compute from descriptor in init.
-  //  print_dbg(" , computed val : 0x");
+  //  //print_dbg(" , computed val : 0x");
   if(in < 0) { in = 0; }
-  //  print_dbg_hex(fix16_mul((s32)in << 1, 0x400000) );
+  //  //print_dbg_hex(fix16_mul((s32)in << 1, 0x400000) );
   print_fix16(dst, fix16_mul((s32)in << 1, 0x400000) );
   
   //  print_fix16(dst, tabRep[uin] );
@@ -58,14 +58,14 @@ void scaler_integrator_init(void* scaler) {
   ParamScaler* sc = (ParamScaler*)scaler;
 
 
-  print_dbg("\r\n initializing integrator scaler for param, label: ");
-  print_dbg(sc->desc->label);
+  //print_dbg("\r\n initializing integrator scaler for param, label: ");
+  //print_dbg(sc->desc->label);
 
   // check descriptor
   if( sc->desc->type != eParamTypeIntegrator) {
-    print_dbg("\r\n !!! warning: wrong param type for integrator scaler");
-    print_dbg(" ; this param has type: ");
-    print_dbg_ulong(sc->desc->type);
+    //print_dbg("\r\n !!! warning: wrong param type for integrator scaler");
+    //print_dbg(" ; this param has type: ");
+    //print_dbg_ulong(sc->desc->type);
   }
   
   // init flag for static data
@@ -98,8 +98,8 @@ io_t scaler_integrator_in(void* scaler, s32 x) {
   s32 ju = tabSize - 1;
   s32 jm;
 
-  print_dbg("\r\n scaler_integrator_in, x: 0x");
-  print_dbg_hex(x);
+  //print_dbg("\r\n scaler_integrator_in, x: 0x");
+  //print_dbg_hex(x);
 
   // first, cheat and check zero.
   /// will often be true
@@ -115,8 +115,8 @@ io_t scaler_integrator_in(void* scaler, s32 x) {
     }
   }
 
-  /* print_dbg(" , median index: "); */
-  /* print_dbg_ulong(jm); */
+  /* //print_dbg(" , median index: "); */
+  /* //print_dbg_ulong(jm); */
 
   return (u16)jm << inRshift;
 }

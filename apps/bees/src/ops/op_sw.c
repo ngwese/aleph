@@ -65,13 +65,13 @@ void op_sw_init(void* op) {
 
 // input toggle mode
 static void op_sw_in_tog(op_sw_t* sw, const io_t v) {
-  //  print_dbg("\r\n op_sw_in_mul");
+  //  //print_dbg("\r\n op_sw_in_mul");
   if ((v) > 0) { sw->tog = OP_ONE; } else  { sw->tog = 0; } 
 }
 
 // input multiplier
 static void op_sw_in_mul(op_sw_t* sw, const io_t v) {
-  //  print_dbg("\r\n op_sw_in_mul");
+  //  //print_dbg("\r\n op_sw_in_mul");
 
   sw->mul = v;
   if (sw->state > 0) {

@@ -14,8 +14,8 @@
 void scaler_short_init(void* scaler) {
   ParamScaler* sc = (ParamScaler*)scaler;
 
-  // print_dbg("\r\n initializing short scaler for param, label: ");
-  // print_dbg(sc->desc->label);
+  // //print_dbg("\r\n initializing short scaler for param, label: ");
+  // //print_dbg(sc->desc->label);
   sc->inMin = scaler_short_in(scaler, sc->desc->min);
   sc->inMax = scaler_short_in(scaler, sc->desc->max);
 

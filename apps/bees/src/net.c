@@ -162,12 +162,12 @@ static const u8* onode_unpickle(const u8* src, onode_t* out) {
   //  out->preset = (u8)v32;
 
 #ifdef PRINT_PICKLE
-  print_dbg(" ; opIdx: ");
-  print_dbg_ulong(out->opIdx);
-  print_dbg(" ; opOutIdx: ");
-  print_dbg_ulong(out->opOutIdx);
-  print_dbg(" ; target: ");
-  print_dbg_ulong(out->target);
+  //print_dbg(" ; opIdx: ");
+  //print_dbg_ulong(out->opIdx);
+  //print_dbg(" ; opOutIdx: ");
+  //print_dbg_ulong(out->opOutIdx);
+  //print_dbg(" ; target: ");
+  //print_dbg_ulong(out->target);
 #endif
 
   return src;
@@ -179,12 +179,12 @@ static u8* inode_pickle(inode_t* in, u8* dst) {
   //// this is a preset variable
   //  *dst++ = in->preset;
 #ifdef PRINT_PICKLE
-  print_dbg("\r\n pickling input node, op index: ");
-  print_dbg_ulong(in->opIdx);
-  print_dbg(" , input idx: ");
-  print_dbg_ulong(in->opInIdx);
-  print_dbg(" , play flag: ");
-  print_dbg_ulong(in->play);
+  //print_dbg("\r\n pickling input node, op index: ");
+  //print_dbg_ulong(in->opIdx);
+  //print_dbg(" , input idx: ");
+  //print_dbg_ulong(in->opInIdx);
+  //print_dbg(" , play flag: ");
+  //print_dbg_ulong(in->play);
 #endif
 
   // play inclusion flag
@@ -206,13 +206,13 @@ static const u8* inode_unpickle(const u8* src, inode_t* in) {
   in->play = *src++;
 
 #ifdef PRINT_PICKLE
-  print_dbg(" ; opIdx: ");
-  print_dbg_ulong(in->opIdx);
-  print_dbg(" ; opInIdx: ");
-  print_dbg_ulong(in->opInIdx);
+  //print_dbg(" ; opIdx: ");
+  //print_dbg_ulong(in->opIdx);
+  //print_dbg(" ; opInIdx: ");
+  //print_dbg_ulong(in->opInIdx);
 
-  print_dbg("; got flag: ");
-  print_dbg_ulong(in->play);
+  //print_dbg("; got flag: ");
+  //print_dbg_ulong(in->play);
 #endif
 
   // dummy byte for alignment
@@ -254,8 +254,8 @@ void net_init(void) {
     net_init_onode(i);
   }
 
-  print_dbg("\r\n initialized ctlnet, byte count: ");
-  print_dbg_hex(sizeof(ctlnet_t));
+  //print_dbg("\r\n initialized ctlnet, byte count: ");
+  //print_dbg_hex(sizeof(ctlnet_t));
   add_sys_ops();
   // ???
   netActive = 1;
@@ -265,12 +265,12 @@ void net_init(void) {
 // de-initialize network
 void net_deinit(void) {
   u32 i;
-  print_dbg("\r\n deinitializing network");
+  //print_dbg("\r\n deinitializing network");
   for(i=0; i<net->numOps; i++) {
     op_deinit(net->ops[i]);
   }
   
-  print_dbg("\r\n finished de-initializing network");
+  //print_dbg("\r\n finished de-initializing network");
 
   net->opPoolOffset = 0;
   net->numOps = 0;
@@ -314,20 +314,20 @@ void net_activate(s16 inIdx, const io_t val, void* op) {
   s16 pIndex;
   u8 vis;
 
-  print_dbg("\r\n net_activate, input idx: ");
-  print_dbg_hex(inIdx);
-  print_dbg(" , value: ");
-  print_dbg_hex(val);
+  //print_dbg("\r\n net_activate, input idx: ");
+  //print_dbg_hex(inIdx);
+  //print_dbg(" , value: ");
+  //print_dbg_hex(val);
 
-  print_dbg(" , op index: ");
-  print_dbg_ulong(net->ins[inIdx].opIdx);
-  print_dbg(" , input idx: ");
-  print_dbg_ulong(net->ins[inIdx].opInIdx);
+  //print_dbg(" , op index: ");
+  //print_dbg_ulong(net->ins[inIdx].opIdx);
+  //print_dbg(" , input idx: ");
+  //print_dbg_ulong(net->ins[inIdx].opInIdx);
 
   if(!netActive) {
     if(op != NULL) {
       // if the net isn't active, dont respond to requests from operators
-      print_dbg(" ... ignoring node activation from op.");
+      //print_dbg(" ... ignoring node activation from op.");
       return;
     }
   }
@@ -339,14 +339,14 @@ void net_activate(s16 inIdx, const io_t val, void* op) {
   }
 
   vis = net_get_in_play(inIdx);
-    print_dbg(" , play visibility flag : ");
-    print_dbg_ulong(vis);
+    //print_dbg(" , play visibility flag : ");
+    //print_dbg_ulong(vis);
 
   if(inIdx < net->numIns) {      
     // this is an op input
     pIn = &(net->ins[inIdx]);
     
-    print_dbg(" ; input node pointer: 0x"); print_dbg_hex((u32)pIn);
+    //print_dbg(" ; input node pointer: 0x"); //print_dbg_hex((u32)pIn);
 
     op_set_in_val(net->ops[pIn->opIdx],
 		  pIn->opInIdx,
@@ -357,20 +357,20 @@ void net_activate(s16 inIdx, const io_t val, void* op) {
     //// FIXME this is horrible
     pIndex = inIdx - net->numIns;
     if (pIndex >= net->numParams) { return; }
-    print_dbg(" ; param index: 0x"); print_dbg_ulong(pIndex);
+    //print_dbg(" ; param index: 0x"); //print_dbg_ulong(pIndex);
     set_param_value(pIndex, val);
   }
 
   /// only process for play mode if we're in play mode
   if(pageIdx == ePagePlay) {
-    print_dbg(" , play mode ");
+    //print_dbg(" , play mode ");
     if(opPlay) {
       //      operators have focus, do nothing
-      print_dbg(" , op focus mode");
+      //print_dbg(" , op focus mode");
     } else {
       // process if play-mode-visibility is set on this input
       if(vis) {
-	print_dbg(" , input enabled");
+	//print_dbg(" , input enabled");
 	play_input(inIdx);
       }
     }
@@ -387,41 +387,41 @@ s16 net_add_op(op_id_t opId) {
   s32 numInsSave = net->numIns;
   s32 numOutsSave = net->numOuts;
 
-  print_dbg("\r\n adding operator; old input count: ");
-  print_dbg_ulong(numInsSave);
+  //print_dbg("\r\n adding operator; old input count: ");
+  //print_dbg_ulong(numInsSave);
 
   if (net->numOps >= NET_OPS_MAX) {
     return -1;
   }
-  print_dbg(" , op class: ");
-  print_dbg_ulong(opId);
-  print_dbg(" , size: ");
-  print_dbg_ulong(op_registry[opId].size);
+  //print_dbg(" , op class: ");
+  //print_dbg_ulong(opId);
+  //print_dbg(" , size: ");
+  //print_dbg_ulong(op_registry[opId].size);
 
 
   if (op_registry[opId].size > NET_OP_POOL_SIZE - net->opPoolOffset) {
-    print_dbg("\r\n op creation failed; op memory pool is exhausted.");
+    //print_dbg("\r\n op creation failed; op memory pool is exhausted.");
     return -1;
   }
 
-  print_dbg(" ; allocating... ");
+  //print_dbg(" ; allocating... ");
   op = (op_t*)((u8*)net->opPool + net->opPoolOffset);
   // use the class ID to initialize a new object in scratch
-  print_dbg(" ; op address: 0x");
-  print_dbg_hex((u32)op);
-  print_dbg(" ;  initializing... ");
+  //print_dbg(" ; op address: 0x");
+  //print_dbg_hex((u32)op);
+  //print_dbg(" ;  initializing... ");
   op_init(op, opId);
 
   ins = op->numInputs;
   outs = op->numOutputs;
 
   if (ins > (NET_INS_MAX - net->numIns)) {
-    print_dbg("\r\n op creation failed; too many inputs in network.");
+    //print_dbg("\r\n op creation failed; too many inputs in network.");
     return -1;
   }
 
   if (outs > (NET_OUTS_MAX - net->numOuts)) {
-    print_dbg("\r\n op creation failed; too many outputs in network.");
+    //print_dbg("\r\n op creation failed; too many outputs in network.");
     return -1;
   }
 
@@ -448,20 +448,20 @@ s16 net_add_op(op_id_t opId) {
     // if we added input nodes, need to adjust connections to DSP params
     for(i=0; i < numOutsSave; i++) {
 
-      /* print_dbg("\r\n checking output no. "); */
-      /* print_dbg_ulong(i); */
-      /* print_dbg(" ; target: "); */
-      /* print_dbg_ulong(net->outs[i].target); */
+      /* //print_dbg("\r\n checking output no. "); */
+      /* //print_dbg_ulong(i); */
+      /* //print_dbg(" ; target: "); */
+      /* //print_dbg_ulong(net->outs[i].target); */
             
       if(net->outs[i].target >= numInsSave) {
-	/* print_dbg("\r\n adjusting target after op creation; old op count: "); */
-	/* print_dbg_ulong(net->numOps); */
-	/* print_dbg(" , output index: "); */
-	/* print_dbg_ulong(i); */
-	/* print_dbg(" , current target "); */
-	/* print_dbg_ulong(net->outs[i].target); */
-	/* print_dbg(" , count of inputs in new op: "); */
-	/* print_dbg_ulong(ins); */
+	/* //print_dbg("\r\n adjusting target after op creation; old op count: "); */
+	/* //print_dbg_ulong(net->numOps); */
+	/* //print_dbg(" , output index: "); */
+	/* //print_dbg_ulong(i); */
+	/* //print_dbg(" , current target "); */
+	/* //print_dbg_ulong(net->outs[i].target); */
+	/* //print_dbg(" , count of inputs in new op: "); */
+	/* //print_dbg_ulong(ins); */
 
 	// preset target, add offset for new inputs
 	net_connect(i, net->outs[i].target + ins);
@@ -487,7 +487,7 @@ s16 net_add_op(op_id_t opId) {
 	// copy to new param index
 	idxNew = idxOld + ins;
 	if(idxNew >= PRESET_INODES_COUNT) {
-	  print_dbg("\r\n out of preset input nodes in new op creation! ");
+	  //print_dbg("\r\n out of preset input nodes in new op creation! ");
 	  continue;
 	} else {
 	  presets[i].ins[idxNew].value = presets[i].ins[idxOld].value;
@@ -610,7 +610,7 @@ void net_remove_op(const u32 idx) {
     }
     if(firstIn == -1 ) {
       // supposed to be a first inlet but we couldn't find it; we are fucked
-      print_dbg("\r\n oh dang! couldn't find first inlet for deleted operator! \r\n");
+      //print_dbg("\r\n oh dang! couldn't find first inlet for deleted operator! \r\n");
     }
     lastIn = firstIn + nIns - 1;
     // check if anything connects here
@@ -697,7 +697,7 @@ void net_connect(u32 oIdx, u32 iIdx) {
   if((srcOpIdx >=0) && (srcOpIdx < net->numOps)) {
     net->ops[srcOpIdx]->out[net->outs[oIdx].opOutIdx] = iIdx;
   } else {
-    print_dbg(" !!!!!! WARNING ! invalid source operator index in net_connect() ");
+    //print_dbg(" !!!!!! WARNING ! invalid source operator index in net_connect() ");
   }
 }
 
@@ -891,10 +891,10 @@ void net_set_in_value(s32 inIdx, io_t val) {
 io_t net_inc_in_value(s32 inIdx, io_t inc) {
   op_t* op;
     
-    /* print_dbg("\r\n incrementing input in network, value: "); */
-    /* print_dbg_hex(net_get_in_value(inIdx < 0 ? 0 : (u16)inIdx)); */
-    /* print_dbg(" , increment: "); */
-    /* print_dbg_hex(inc); */
+    /* //print_dbg("\r\n incrementing input in network, value: "); */
+    /* //print_dbg_hex(net_get_in_value(inIdx < 0 ? 0 : (u16)inIdx)); */
+    /* //print_dbg(" , increment: "); */
+    /* //print_dbg_hex(inc); */
     
   if(inIdx >= net->numIns) {
     // hack to get param idx
@@ -910,8 +910,8 @@ io_t net_inc_in_value(s32 inIdx, io_t inc) {
     op_inc_in_val(op, net->ins[inIdx].opInIdx, inc);
     
 
-    print_dbg(" , result: ");
-    print_dbg_hex( net_get_in_value(inIdx));
+    //print_dbg(" , result: ");
+    //print_dbg_hex( net_get_in_value(inIdx));
 
     return net_get_in_value(inIdx);
   }
@@ -935,11 +935,11 @@ u8 net_toggle_out_preset(u32 id) {
   u8 tmp = preset_out_enabled(preset_get_select(), id) ^ 1;
   //  net->outs[id].preset ^= 1;
   //  return net->outs[id].preset;
-  print_dbg("\r\n toggled output-preset_enable");
-  print_dbg(", out: ");
-  print_dbg_ulong(id);
-  print_dbg(", flag: ");
-  print_dbg_ulong(tmp);
+  //print_dbg("\r\n toggled output-preset_enable");
+  //print_dbg(", out: ");
+  //print_dbg_ulong(id);
+  //print_dbg(", flag: ");
+  //print_dbg_ulong(tmp);
   preset_get_selected()->outs[id].enabled = tmp;
   return tmp;
 }
@@ -984,20 +984,20 @@ u8 net_toggle_in_play(u32 inIdx) {
   u32 pidx;
   if(inIdx < net->numIns) {
     net->ins[inIdx].play ^= 1;
-    print_dbg("\r\n toggle in.play, op index: ");
-    print_dbg_ulong(net->ins[inIdx].opIdx);
-    print_dbg(" , input idx: ");
-    print_dbg_ulong(net->ins[inIdx].opInIdx);
-    print_dbg(" , result: ");
-    print_dbg(net->ins[inIdx].play ? "1" : "0");
+    //print_dbg("\r\n toggle in.play, op index: ");
+    //print_dbg_ulong(net->ins[inIdx].opIdx);
+    //print_dbg(" , input idx: ");
+    //print_dbg_ulong(net->ins[inIdx].opInIdx);
+    //print_dbg(" , result: ");
+    //print_dbg(net->ins[inIdx].play ? "1" : "0");
     return net->ins[inIdx].play;
   } else {
     pidx = inIdx - net->numIns;
     net->params[pidx].play ^= 1;
-    print_dbg("\r\n toggle param.play, index: ");
-    print_dbg_ulong(pidx);
-    print_dbg(" , result: ");
-    print_dbg(net->params[pidx].play ? "1" : "0");
+    //print_dbg("\r\n toggle param.play, index: ");
+    //print_dbg_ulong(pidx);
+    //print_dbg(" , result: ");
+    //print_dbg(net->params[pidx].play ? "1" : "0");
     return net->params[pidx].play;
   }
 }
@@ -1035,7 +1035,7 @@ void net_add_param(u32 idx, const ParamDesc * pdesc) {
   scaler_init(&(net->params[net->numParams].scaler), 
 	      &(net->params[net->numParams].desc));
   ////////////
-  print_dbg("\r\n finished initializing param scaler.");
+  //print_dbg("\r\n finished initializing param scaler.");
 
   //// TEST: don't
   //  net->params[net->numParams].idx = idx; 
@@ -1057,7 +1057,7 @@ void net_add_param(u32 idx, const ParamDesc * pdesc) {
 
 // clear existing parameters
 void net_clear_params(void) {
-  print_dbg("\r\n clearing parameter list... ");
+  //print_dbg("\r\n clearing parameter list... ");
   net->numParams = 0;
 }
 
@@ -1094,11 +1094,11 @@ void net_retrigger_ins(void) {
  
 /*   bfin_get_num_params(&numParams); */
   
-/*   print_dbg("\r\nnumparams: "); */
-/*   print_dbg_ulong(numParams); */
+/*   //print_dbg("\r\nnumparams: "); */
+/*   //print_dbg_ulong(numParams); */
 
 /*   if(numParams == 255) { */
-/*     print_dbg("\r\n report_params fail (255)"); */
+/*     //print_dbg("\r\n report_params fail (255)"); */
 /*     return 0; */
 /*   } */
   
@@ -1117,17 +1117,17 @@ void net_retrigger_ins(void) {
 /*       ///// */
 
 
-/*       print_dbg("\r\n received descriptor for param, index : "); */
-/*       print_dbg_ulong(i); */
-/*       print_dbg(" , label : "); */
-/*       print_dbg((const char* )pdesc.label); */
+/*       //print_dbg("\r\n received descriptor for param, index : "); */
+/*       //print_dbg_ulong(i); */
+/*       //print_dbg(" , label : "); */
+/*       //print_dbg((const char* )pdesc.label); */
 
-/*       print_dbg(" ; \t initial value: 0x"); */
+/*       //print_dbg(" ; \t initial value: 0x"); */
 /*       val = bfin_get_param(i); */
-/*       print_dbg_hex(val); */
+/*       //print_dbg_hex(val); */
 
 /*       net_add_param(i, (const ParamDesc*)&pdesc); */
-/*       print_dbg("\r\n finished adding parameter."); */
+/*       //print_dbg("\r\n finished adding parameter."); */
 
 /*       //      net->params[net->numParams - 1].data.value = val;  */
 /*       //// use reverse-lookup method from scaler       */
@@ -1138,28 +1138,28 @@ void net_retrigger_ins(void) {
 
 /*     } */
 /*   } else { */
-/*     print_dbg("\r\n bfin: no parameters reported"); */
+/*     //print_dbg("\r\n bfin: no parameters reported"); */
 /*     return 0; */
 /*   } */
   
 /*   delay_ms(100); */
 
-/*   print_dbg("\r\n checking module label "); */
+/*   //print_dbg("\r\n checking module label "); */
 /*   bfin_get_module_name(buf); */
 
 /*   delay_ms(10); */
 
-/*   print_dbg("\r\n bfin module name: "); */
-/*   print_dbg((const char*)buf); */
+/*   //print_dbg("\r\n bfin module name: "); */
+/*   //print_dbg((const char*)buf); */
 
 
 /*   //  if(numParams > 0 && numParams != 255) { */
 /*     /// test bfin_get_param on initial values */
-/*     //    print_dbg("\r\n reporting inital param values: "); */
+/*     //    //print_dbg("\r\n reporting inital param values: "); */
 /*     //    for(i=0; i<numParams; ++i) { */
-/*     //  print_dbg("\r\n 0x"); */
+/*     //  //print_dbg("\r\n 0x"); */
 /*   //      val = bfin_get_param(i); */
-/*   //      print_dbg_hex(val); */
+/*   //      //print_dbg_hex(val); */
 /*       //    } */
 /*       //  } */
 /*   return (u8)numParams; */
@@ -1239,8 +1239,8 @@ u8* net_unpickle(const u8* src) {
   src = unpickle_32(src, &count);
 
   #ifdef PRINT_PICKLE
-    print_dbg("\r\n count of ops: ");
-    print_dbg_ulong(count);
+    //print_dbg("\r\n count of ops: ");
+    //print_dbg_ulong(count);
   #endif
 
   // loop over operators
@@ -1250,8 +1250,8 @@ u8* net_unpickle(const u8* src) {
     id = (op_id_t)val;
 
     #ifdef PRINT_PICKLE
-        print_dbg("\r\n adding op, class id: ");
-        print_dbg_ulong(id);
+        //print_dbg("\r\n adding op, class id: ");
+        //print_dbg_ulong(id);
     #endif
 
     // add and initialize from class id
@@ -1263,8 +1263,8 @@ u8* net_unpickle(const u8* src) {
 
     if(op->unpickle != NULL)  {
       #ifdef PRINT_PICKLE
-            print_dbg(" ... unpickling op .... ");
-            print_dbg_ulong(id);
+            //print_dbg(" ... unpickling op .... ");
+            //print_dbg_ulong(id);
       #endif
       src = (*(op->unpickle))(op, src);
     }
@@ -1273,25 +1273,25 @@ u8* net_unpickle(const u8* src) {
 #if 1
 
   /// copy ALL i/o nodes, even unused!
-  print_dbg("\r\n reading all input nodes ");
+  //print_dbg("\r\n reading all input nodes ");
   
   for(i=0; i < (NET_INS_MAX); ++i) {
 #ifdef PRINT_PICKLE
-    print_dbg("\r\n unpickling input node, idx: ");
-    print_dbg_ulong(i);
+    //print_dbg("\r\n unpickling input node, idx: ");
+    //print_dbg_ulong(i);
 #endif
 
     src = inode_unpickle(src, &(net->ins[i]));
   }
 
 #ifdef PRINT_PICKLE
-  print_dbg("\r\n reading all output nodes");
+  //print_dbg("\r\n reading all output nodes");
 #endif
   // read output nodes
   for(i=0; i < NET_OUTS_MAX; ++i) {
 #ifdef PRINT_PICKLE
-    print_dbg("\r\n unpickling output node, idx: ");
-    print_dbg_ulong(i);
+    //print_dbg("\r\n unpickling output node, idx: ");
+    //print_dbg_ulong(i);
 #endif 
 
     src = onode_unpickle(src, &(net->outs[i]));
@@ -1306,8 +1306,8 @@ u8* net_unpickle(const u8* src) {
 #else 
 #error broken input node unserialization
 /* /\* #ifdef PRINT_PICKLE *\/ */
-/* /\*   print_dbg("\r\n reading input nodes, count: "); *\/ */
-/* /\*   print_dbg_ulong(net->numIns); *\/ */
+/* /\*   //print_dbg("\r\n reading input nodes, count: "); *\/ */
+/* /\*   //print_dbg_ulong(net->numIns); *\/ */
 /* /\* #endif *\/ */
   
 /*   for(i=0; i < (net->numIns); ++i) { */
@@ -1315,8 +1315,8 @@ u8* net_unpickle(const u8* src) {
 /*   } */
 
 /* /\* #ifdef PRINT_PICKLE *\/ */
-/* /\*   print_dbg("\r\n reading output nodes, count: "); *\/ */
-/* /\*   print_dbg_ulong(net->numOuts); *\/ */
+/* /\*   //print_dbg("\r\n reading output nodes, count: "); *\/ */
+/* /\*   //print_dbg_ulong(net->numOuts); *\/ */
 /* /\* #endif *\/ */
 
 /*   // read output nodes */
@@ -1332,15 +1332,15 @@ u8* net_unpickle(const u8* src) {
   net->numParams = (u16)val;
 
 #ifdef PRINT_PICKLE
-  print_dbg("\r\n reading params, count: ");
-  print_dbg_ulong(net->numParams);
+  //print_dbg("\r\n reading params, count: ");
+  //print_dbg_ulong(net->numParams);
 #endif
 
   // read parameter nodes (includes value and descriptor)
   for(i=0; i<(net->numParams); ++i) {
 #ifdef PRINT_PICKLE
-    print_dbg("\r\n unpickling param, idx: ");
-    print_dbg_ulong(i);
+    //print_dbg("\r\n unpickling param, idx: ");
+    //print_dbg_ulong(i);
 #endif
 
     src = param_unpickle(&(net->params[i]), src);
@@ -1441,15 +1441,15 @@ s16 net_split_out(s16 outIdx) {
 // test / dbg
 #if 1
 void net_print(void) {
-  print_dbg("\r\n net address: 0x");
-  print_dbg_hex((u32)(net));
+  //print_dbg("\r\n net address: 0x");
+  //print_dbg_hex((u32)(net));
 
-  print_dbg("\r\n net input count: ");
-  print_dbg_ulong(net->numIns);
-  print_dbg("\r\n net output count: ");
-  print_dbg_ulong(net->numOuts);
-  print_dbg("\r\n net op count: ");
-  print_dbg_ulong(net->numOps);
+  //print_dbg("\r\n net input count: ");
+  //print_dbg_ulong(net->numIns);
+  //print_dbg("\r\n net output count: ");
+  //print_dbg_ulong(net->numOuts);
+  //print_dbg("\r\n net op count: ");
+  //print_dbg_ulong(net->numOps);
 }
 #endif
 

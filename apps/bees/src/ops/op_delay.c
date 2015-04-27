@@ -135,14 +135,14 @@ const u8* op_delay_unpickle(op_delay_t* delay, const u8* src) {
 
 // timer manipulation
 static inline void op_delay_set_timer(op_delay_t* delay) {
-  print_dbg("\r\n op_delay set timer, start ");
+  //print_dbg("\r\n op_delay set timer, start ");
   timers_set_custom(&(delay->timer), op_to_int(delay->ms), &(delay->op_poll) );
   
-  print_dbg("\r\n op_delay set timer, done");
+  //print_dbg("\r\n op_delay set timer, done");
 }
 
 static inline void op_delay_unset_timer(op_delay_t* delay) {
-  print_dbg("\r\n op_delay_unset_timer, start ");
+  //print_dbg("\r\n op_delay_unset_timer, start ");
   timer_remove(&(delay->timer));
-  print_dbg("\r\n op_delay_unset_timer, done ");
+  //print_dbg("\r\n op_delay_unset_timer, done ");
 }

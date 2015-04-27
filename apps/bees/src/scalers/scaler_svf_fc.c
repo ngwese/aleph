@@ -27,8 +27,8 @@ static u8 initFlag = 0;
 //---- extern funcs
 
 s32 scaler_svf_fc_val(void* scaler, io_t in) {
-  /* print_dbg("\r\n requesting svf_fc_scaler value for input: 0x"); */
-  /* print_dbg_hex((u32)in); */
+  /* //print_dbg("\r\n requesting svf_fc_scaler value for input: 0x"); */
+  /* //print_dbg_hex((u32)in); */
   if(in < 0) { in = 0; }
   return tabVal[(u16)((u16)in >> inRshift)];
 }
@@ -44,7 +44,7 @@ void scaler_svf_fc_init(void* scaler) {
   ParamScaler* sc = (ParamScaler*)scaler;
   // check descriptor
   if( sc->desc->type != eParamTypeSvfFreq) {
-    print_dbg("\r\n !!! warning: wrong param type for svf_fc scaler");
+    //print_dbg("\r\n !!! warning: wrong param type for svf_fc scaler");
   }
   
   // init flag for static data
@@ -78,8 +78,8 @@ io_t scaler_svf_fc_in(void* scaler, s32 x) {
   s32 ju = tabSize - 1;
   s32 jm;
 
-  print_dbg("\r\n scaler_svf_fc_in, x: 0x");
-  print_dbg_hex(x);
+  //print_dbg("\r\n scaler_svf_fc_in, x: 0x");
+  //print_dbg_hex(x);
 
   // binary tree search
   while(ju - jl > 1) {

@@ -65,7 +65,7 @@ void net_midi_list_remove(op_midi_t* op) {
     ml.num = 0;
   } else {
     if(op->prev == NULL || op->next == NULL) {
-      print_dbg("\r\n error unlinking midi operator");
+      //print_dbg("\r\n error unlinking midi operator");
       return;
     }
     op->prev->next = op->next;
@@ -80,8 +80,8 @@ void net_midi_list_remove(op_midi_t* op) {
 void net_handle_midi_packet(u32 data) {
   u32 i;
   op_midi_t* op = ml.top;
-  //  print_dbg("\r\n net_handle_midi_packet, num ops: ");
-  // print_dbg_ulong(ml.num);
+  //  //print_dbg("\r\n net_handle_midi_packet, num ops: ");
+  // //print_dbg_ulong(ml.num);
   for(i=0; i < ml.num; ++i) {
     (*(op->handler))(op, data);
     op = op->next;

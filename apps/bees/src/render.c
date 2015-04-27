@@ -128,7 +128,7 @@ void render_init(void) {
   region_alloc((region*)(&bootScrollRegion));
   scroll_init(&bootScroll, &bootScrollRegion);
 
-  print_dbg("\r\n init rendering regions.. ");
+  //print_dbg("\r\n init rendering regions.. ");
   // screen regions allocated here
   region_alloc((region*)(&headRegion_pr));
   region_alloc((region*)(&(footRegion_pr[0])));
@@ -215,8 +215,8 @@ void render_set_scroll(scroll* scr) {
 
 // append to line buffer
  inline void appendln(const char* str) {
-  //  print_dbg("\n\r line buffer start: ");
-  //  print_dbg_hex(pline);
+  //  //print_dbg("\n\r line buffer start: ");
+  //  //print_dbg_hex(pline);
   while((*str != 0) && (pline <= pLineEnd)) {
     *pline = *str;
     ++pline;
@@ -489,8 +489,8 @@ void render_edit_string(region* reg, char* str, u8 len, u8 cursor) {
     }
   }
   reg->dirty = 1;
-  print_dbg("\r\n edited string: ");
-  print_dbg(str);
+  //print_dbg("\r\n edited string: ");
+  //print_dbg(str);
 }
 
 

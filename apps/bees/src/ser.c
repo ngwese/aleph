@@ -62,7 +62,7 @@ void serial_process(s32 data) {
   while(serial_read_pos != c) {
     //////////////////
     //// TEST: loopback
-    print_dbg_char(serial_buffer[serial_read_pos]);
+    //print_dbg_char(serial_buffer[serial_read_pos]);
     serial_read_pos++;
     if(serial_read_pos == SERIAL_BUFFER_SIZE) serial_read_pos = 0;
   }
@@ -80,7 +80,7 @@ void serial_process(s32 data) {
     // check for null, indicating complete packet
     else if(c == 0 && escape == 0) {
       if(serial_buffer[0] >= eComNumCommands) {		// check for garbage command
-      	print_dbg("bad serial command.");
+      	//print_dbg("bad serial command.");
       	serial_write_pos++;
       } else {
       	serial_decode = serialFuncs[serial_buffer[serial_read_pos]];			// first byte is index
@@ -139,16 +139,16 @@ void serial_param_get(s32 data) {
 
   // index check for bounds?
   val = bfin_get_param(idx);
-  // print_dbg("\nvalue: ");
-  // print_dbg_ulong(val);
-  // print_dbg(" : ");
-  // print_dbg_ulong((u8)(val>>24 & 0xff));
-  // print_dbg(" ");
-  // print_dbg_ulong((u8)(val>>16 & 0xff));
-  // print_dbg(" ");
-  // print_dbg_ulong((u8)(val>>8 & 0xff));
-  // print_dbg(" ");
-  // print_dbg_ulong((u8)val & 0xff);
+  // //print_dbg("\nvalue: ");
+  // //print_dbg_ulong(val);
+  // //print_dbg(" : ");
+  // //print_dbg_ulong((u8)(val>>24 & 0xff));
+  // //print_dbg(" ");
+  // //print_dbg_ulong((u8)(val>>16 & 0xff));
+  // //print_dbg(" ");
+  // //print_dbg_ulong((u8)(val>>8 & 0xff));
+  // //print_dbg(" ");
+  // //print_dbg_ulong((u8)val & 0xff);
 
   serial_send_start(4);
   serial_send_byte(idx);
@@ -176,36 +176,36 @@ void com_req_num_params(u16 pos) {
   e.data = pos; 
   event_post(&e);
 
-  // print_dbg("req_num_params:");
-  // print_dbg_ulong(serial_buffer[pos]);
+  // //print_dbg("req_num_params:");
+  // //print_dbg_ulong(serial_buffer[pos]);
 }
 
 void com_req_param_info(u16 pos) {
-  // print_dbg("req_param_info:");
-  // print_dbg_ulong(serial_buffer[pos]);
-  // print_dbg_ulong(serial_buffer[pos+1]);
+  // //print_dbg("req_param_info:");
+  // //print_dbg_ulong(serial_buffer[pos]);
+  // //print_dbg_ulong(serial_buffer[pos+1]);
   e.type = kEventSerialParamInfo;
   e.data = pos; 
   event_post(&e);	
 }
 
 void com_get_param(u16 pos) {
-  // print_dbg("get_param:");
-  // print_dbg_ulong(serial_buffer[pos]);
-  // print_dbg_ulong(serial_buffer[pos+1]);
+  // //print_dbg("get_param:");
+  // //print_dbg_ulong(serial_buffer[pos]);
+  // //print_dbg_ulong(serial_buffer[pos+1]);
   e.type = kEventSerialParamGet;
   e.data = pos; 
   event_post(&e);
 }
 
 void com_set_param(u16 pos) {
-  // print_dbg("set_param:");
-  // print_dbg_ulong(serial_buffer[pos]);
-  // print_dbg_ulong(serial_buffer[pos+1]);
-  // print_dbg_ulong(serial_buffer[pos+2]);
-  // print_dbg_ulong(serial_buffer[pos+3]);
-  // print_dbg_ulong(serial_buffer[pos+4]);
-  // print_dbg_ulong(serial_buffer[pos+5]);
+  // //print_dbg("set_param:");
+  // //print_dbg_ulong(serial_buffer[pos]);
+  // //print_dbg_ulong(serial_buffer[pos+1]);
+  // //print_dbg_ulong(serial_buffer[pos+2]);
+  // //print_dbg_ulong(serial_buffer[pos+3]);
+  // //print_dbg_ulong(serial_buffer[pos+4]);
+  // //print_dbg_ulong(serial_buffer[pos+5]);
   e.type = kEventSerialParamSet;
   e.data = pos; 
   event_post(&e);

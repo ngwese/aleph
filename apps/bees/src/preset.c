@@ -131,17 +131,17 @@ void preset_store(u32 preIdx) {
 // recall everything enabled in given preset
 void preset_recall(u32 preIdx) {
   u16 i;
-  print_dbg("\r\n preset_recall INS");
+  //print_dbg("\r\n preset_recall INS");
 
 
-  print_dbg("\r\n preset_recall OUTS");
+  //print_dbg("\r\n preset_recall OUTS");
   // outs
   for(i=0; i<net_num_outs(); ++i) {
     if(presets[preIdx].outs[i].enabled) {
-      print_dbg("\r\n recalling enabled output in target preset, idx: ");
-      print_dbg_ulong(i);
-      print_dbg("\r\n , value: 0x");
-      print_dbg_hex(presets[preIdx].outs[i].target);
+      //print_dbg("\r\n recalling enabled output in target preset, idx: ");
+      //print_dbg_ulong(i);
+      //print_dbg("\r\n , value: 0x");
+      //print_dbg_hex(presets[preIdx].outs[i].target);
 
       net_connect( i, presets[preIdx].outs[i].target );
     }
@@ -151,10 +151,10 @@ void preset_recall(u32 preIdx) {
   // ins
   for(i=0; i<net_num_ins(); ++i) {
     if(presets[preIdx].ins[i].enabled) {
-      print_dbg("\r\n recalling enabled input in target preset, idx: ");
-      print_dbg_ulong(i);
-      print_dbg(", value: 0x");
-      print_dbg_hex(presets[preIdx].ins[i].value);
+      //print_dbg("\r\n recalling enabled input in target preset, idx: ");
+      //print_dbg_ulong(i);
+      //print_dbg(", value: 0x");
+      //print_dbg_hex(presets[preIdx].ins[i].value);
 
       net_set_in_value( i, presets[preIdx].ins[i].value );
     }
@@ -163,13 +163,13 @@ void preset_recall(u32 preIdx) {
 
     /// NOTE: parameter values are included in the inputs list. 
     /// this sucks for various reasons, and should change.
-  /* print_dbg("\r\n preset_recall PARAMS"); */
+  /* //print_dbg("\r\n preset_recall PARAMS"); */
   /* // params */
   /* for(i=0; i<net_num_params(); ++i) { */
   /*   if(presets[preIdx].params[i].enabled) { */
 
-  /*     print_dbg("\r\n recalling enabled input in target preset, idx: "); */
-  /*     print_dbg_ulong(i); */
+  /*     //print_dbg("\r\n recalling enabled input in target preset, idx: "); */
+  /*     //print_dbg_ulong(i); */
 
   /*     set_param_value( i, presets[preIdx].params[i].value ); */
   /*   } */
@@ -187,8 +187,8 @@ void preset_recall(u32 preIdx) {
 
 // preset name
 char* preset_name(u32 id) {
-  //  print_dbg("\r\n request for preset name at address: ");
-  //  print_dbg_hex((u32)&(presets[id]));
+  //  //print_dbg("\r\n request for preset name at address: ");
+  //  //print_dbg_hex((u32)&(presets[id]));
   return presets[id].name;
 }
 
@@ -242,24 +242,24 @@ const u8* presets_unpickle(const u8* src) {
   for(i=0; i<NET_PRESETS_MAX; i++) {
     
 
-    print_dbg("\r\n ... \r\n unpickling preset, idx: ");
-    print_dbg_ulong(i);
-    //    print_dbg("\r\n ...");
+    //print_dbg("\r\n ... \r\n unpickling preset, idx: ");
+    //print_dbg_ulong(i);
+    //    //print_dbg("\r\n ...");
 
     
     // pickle inputs
     //    for(j=0; j<NET_INS_MAX; j++) {
     for(j=0; j < PRESET_INODES_COUNT; j++) {
 
-    /* print_dbg("\r\n unpickling preset input, idx: "); */
-    /* print_dbg_ulong(j); */
+    /* //print_dbg("\r\n unpickling preset input, idx: "); */
+    /* //print_dbg_ulong(j); */
 
       // waste some space for 4-byte alignment
       src = unpickle_32(src, &v32);
       presets[i].ins[j].value = (io_t)v32;
       
-      /* print_dbg(" ; val: "); */
-      /* print_dbg_ulong(v32); */
+      /* //print_dbg(" ; val: "); */
+      /* //print_dbg_ulong(v32); */
 
       ///////////////
       /////////////////
@@ -268,29 +268,29 @@ const u8* presets_unpickle(const u8* src) {
       /* src = unpickle_32(src, &v32); */
       /* presets[i].ins[j].idx = v32; */
 
-      /* print_dbg(" ; idx: "); */
-      /* print_dbg_ulong(v32); */
+      /* //print_dbg(" ; idx: "); */
+      /* //print_dbg_ulong(v32); */
 
       src = unpickle_32(src, &v32);
       presets[i].ins[j].enabled = v32;
 
-      /* print_dbg(" ; enabled: "); */
-      /* print_dbg_ulong(v32); */
+      /* //print_dbg(" ; enabled: "); */
+      /* //print_dbg_ulong(v32); */
 
     }
     // unpickle outputs
     for(j=0; j<NET_OUTS_MAX; j++) {
 
-    /* print_dbg("\r\n unpickling preset output, idx: "); */
-    /* print_dbg_ulong(j); */
+    /* //print_dbg("\r\n unpickling preset output, idx: "); */
+    /* //print_dbg_ulong(j); */
 
 
       // waste some space for 4-byte alignment
       src = unpickle_32(src, &v32);
       presets[i].outs[j].target = (io_t)v32;
 
-      /* print_dbg(" ; target: "); */
-      /* print_dbg_ulong(v32); */
+      /* //print_dbg(" ; target: "); */
+      /* //print_dbg_ulong(v32); */
 
 
       ///////////////
@@ -301,16 +301,16 @@ const u8* presets_unpickle(const u8* src) {
       /* src = unpickle_32(src, &v32); */
       /* presets[i].outs[j].outIdx = v32; */
 
-      /* print_dbg(" ; outIdx: "); */
-      /* print_dbg_ulong(v32); */
+      /* //print_dbg(" ; outIdx: "); */
+      /* //print_dbg_ulong(v32); */
 
 
       src = unpickle_32(src, &v32);
       presets[i].outs[j].enabled = v32;
 
 
-      /* print_dbg(" ; enabled: "); */
-      /* print_dbg_ulong(v32); */
+      /* //print_dbg(" ; enabled: "); */
+      /* //print_dbg_ulong(v32); */
 
     }
 
@@ -331,8 +331,8 @@ const u8* presets_unpickle(const u8* src) {
       presets[i].name[j] = *src++;
     }
 
-    print_dbg(" ; name: ");
-    print_dbg(presets[i].name);
+    //print_dbg(" ; name: ");
+    //print_dbg(presets[i].name);
 
   }
   return src;

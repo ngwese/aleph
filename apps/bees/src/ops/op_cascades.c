@@ -89,7 +89,7 @@ u32 x2 = 7654321;  // seed
 //-------------------------------------------------
 //----- extern function definition
 void op_cascades_init(void* mem) {
-  //  print_dbg("\r\n op_cascades_init ");
+  //  //print_dbg("\r\n op_cascades_init ");
   op_cascades_t* op = (op_cascades_t*)mem;
 
   // superclass functions
@@ -234,9 +234,9 @@ static void op_cascades_trigger(u8 n) {
     else if(rules[n] == 5) {  // rnd
       points[rule_dests[n]] = rnd() % XSIZE;
       
-      print_dbg("\r\n op_cascades >>>>>>>>>>>>>>>>>>>> RANDOM: ");
-      print_dbg_hex(points[rule_dests[n]]);
-      // print_dbg_hex(rnd() % 11);
+      //print_dbg("\r\n op_cascades >>>>>>>>>>>>>>>>>>>> RANDOM: ");
+      //print_dbg_hex(points[rule_dests[n]]);
+      // //print_dbg_hex(rnd() % 11);
 
       positions[rule_dests[n]] = points[rule_dests[n]];
     }
@@ -249,8 +249,8 @@ static void op_cascades_trigger(u8 n) {
       else if(points[rule_dests[n]] > (XSIZE-1)) points[rule_dests[n]] = XSIZE-1;
       positions[rule_dests[n]] = points[rule_dests[n]];  
 
-      print_dbg("\r\n op_cascades >>>>>>>>>>>>>>>>>>>> WANDER: ");
-      print_dbg_hex(points[rule_dests[n]]);   
+      //print_dbg("\r\n op_cascades >>>>>>>>>>>>>>>>>>>> WANDER: ");
+      //print_dbg_hex(points[rule_dests[n]]);   
     }
     else if(rules[n] == 7) {  // return
       points[rule_dests[n]] = points_save[rule_dests[n]];

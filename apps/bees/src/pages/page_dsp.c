@@ -61,7 +61,7 @@ static void select_scroll(s32 dir) {
     /// SCROLL DOWN
     // if selection is already zero, do nothing 
     if(*pageSelect == 0) {
-      //      print_dbg("\r\n reached min selection in inputs scroll. ");
+      //      //print_dbg("\r\n reached min selection in inputs scroll. ");
       return;
     }
     // remove highlight from old center
@@ -90,7 +90,7 @@ static void select_scroll(s32 dir) {
     // SCROLL UP
     // if selection is already max, do nothing 
     if(*pageSelect == max) {
-      //      print_dbg("\r\n reached max selection in inputs scroll. ");
+      //      //print_dbg("\r\n reached max selection in inputs scroll. ");
       return;
     }
     // remove highlight from old center
@@ -236,7 +236,7 @@ void handle_enc_0(s32 val) {
 void init_page_dsp(void) {
   u8 i, n;
   u16 max = files_get_dsp_count() - 1;
-  print_dbg("\r\n alloc DSP page");
+  //print_dbg("\r\n alloc DSP page");
   // allocate regions
   region_alloc(&scrollRegion);
   // init scroll
@@ -288,7 +288,7 @@ void redraw_dsp(void) {
   render_set_scroll(&centerScroll);
 
 
-  print_dbg("\r\n redraw_dsp() ");
+  //print_dbg("\r\n redraw_dsp() ");
   while(i<8) {
     render_line( n, 0xa );
     render_to_scroll_line(i, n == *pageSelect ? 1 : 0);

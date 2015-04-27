@@ -92,18 +92,18 @@ void op_metro_deinit(void* metro) {
 
 // input enable / disable
 void op_metro_in_enable	(op_metro_t* metro, const io_t v) {
-  //  print_dbg("\r\n op_metro_in_enable: 0x");
-  //  print_dbg_hex((u32)(v));
+  //  //print_dbg("\r\n op_metro_in_enable: 0x");
+  //  //print_dbg_hex((u32)(v));
 
   if((v) > 0) {
-    //    print_dbg(" (input value high) ");
+    //    //print_dbg(" (input value high) ");
     if(metro->enable == 0) {
       metro->enable = OP_ONE;
       op_metro_set_timer(metro);
       
     }
   } else {
-    //    print_dbg(" (input value low) ");
+    //    //print_dbg(" (input value low) ");
     if(metro->enable > 0) {
       metro->enable = 0;
       op_metro_unset_timer(metro);
@@ -131,8 +131,8 @@ void op_metro_in_value (op_metro_t* metro, const io_t v) {
 // poll event handler
 void op_metro_poll_handler(void* op) {
   op_metro_t* metro = (op_metro_t*)op;
-  //  print_dbg("\r\n op_metro timer callback, value: 0x");
-  //  print_dbg_hex((u32)(metro->value));
+  //  //print_dbg("\r\n op_metro timer callback, value: 0x");
+  //  //print_dbg_hex((u32)(metro->value));
   net_activate(metro->outs[0], metro->value, &(metro->super));
 }
 
@@ -162,14 +162,14 @@ static inline void op_metro_set_timer(op_metro_t* metro) {
   /* timer_add(&(metro->timer), op_to_int(metro->period), &app_custom_event_callback, metro); */
   timers_set_custom(&(metro->timer), op_to_int(metro->period), &(metro->op_poll) );
   
-  //  print_dbg("\r\n op_metro add timer, return value: ");
-  //  print_dbg(ret ? "1" : "0");
+  //  //print_dbg("\r\n op_metro add timer, return value: ");
+  //  //print_dbg(ret ? "1" : "0");
 }
 
 static inline void op_metro_unset_timer(op_metro_t* metro) {
   timer_remove(&(metro->timer));
   //  timers_unset_custom(&(metro->timer));
 
-  //  print_dbg("\r\n op_metro remove timer, return value: ");
-  //  print_dbg(ret ? "1" : "0");
+  //  //print_dbg("\r\n op_metro remove timer, return value: ");
+  //  //print_dbg(ret ? "1" : "0");
 }

@@ -40,7 +40,7 @@ static op_in_fn op_midi_out_note_in_fn[3] = {
 //-------------------------------------------------
 //----- extern function definition
 void op_midi_out_note_init(void* mem) {
-  //  print_dbg("\r\n op_midi_out_note_init ");
+  //  //print_dbg("\r\n op_midi_out_note_init ");
   op_midi_out_note_t* op = (op_midi_out_note_t*)mem;
 
   // superclass functions
@@ -159,10 +159,10 @@ void op_midi_out_note_send_packet( op_midi_out_note_t* mout ) {
   pack[1] = (u8)(mout->num);
   pack[2] = (u8)(mout->vel);
 
-  print_dbg("\r\n midi_out_note_send_packet; data: ");
-  print_dbg_char_hex(pack[0]);    print_dbg(" ");
-  print_dbg_char_hex(pack[1]);    print_dbg(" ");
-  print_dbg_char_hex(pack[2]);    print_dbg(" ");
+  //print_dbg("\r\n midi_out_note_send_packet; data: ");
+  //print_dbg_char_hex(pack[0]);    //print_dbg(" ");
+  //print_dbg_char_hex(pack[1]);    //print_dbg(" ");
+  //print_dbg_char_hex(pack[2]);    //print_dbg(" ");
 
   midi_write(pack, 3);
 

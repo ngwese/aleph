@@ -186,8 +186,8 @@ void handle_enc_3(s32 val) {
   } else {
     edit_string_dec_char(preset_name(*pageSelect), cursor);
   }
-  print_dbg("\r\b edited preset name: ");
-  print_dbg(preset_name(*pageSelect));
+  //print_dbg("\r\b edited preset name: ");
+  //print_dbg(preset_name(*pageSelect));
 
   render_edit_string(lineRegion, preset_name(*pageSelect), PRESET_NAME_LEN, cursor);
   render_to_scroll_line(SCROLL_CENTER_LINE, 0);
@@ -300,7 +300,7 @@ static void show_foot(void) {
 // init
 void init_page_presets(void) {
   u8 i, n;
-  print_dbg("\r\n alloc PRESETS page");
+  //print_dbg("\r\n alloc PRESETS page");
   // allocate regions
   region_alloc(&scrollRegion);
   // init scroll

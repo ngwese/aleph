@@ -41,7 +41,7 @@ static op_in_fn op_hid_word_in_fn[2] = {
 //-------------------------------------------------
 //----- extern function definition
 void op_hid_word_init(void* mem) {
-  //  print_dbg("\r\n op_hid_word_init ");
+  //  //print_dbg("\r\n op_hid_word_init ");
   op_hid_word_t* op = (op_hid_word_t*)mem;
 
   // superclass functions
@@ -140,10 +140,10 @@ static void op_hid_word_handler(op_hid_t* op_hid) {
       /// is that device-specific too?
       val = ( ((io_t)(frame[byte])) << 8 ) | (io_t)( frame[(byte + 1) & HID_FRAME_IDX_MASK] );
     } else {
-      /* print_dbg("\r\n op_hid_word: 0x");  */
-      /* print_dbg_hex( (int) frame[byte] ); */
-      /* print_dbg(" ; 0x");  */
-      /* print_dbg_hex( (int) ((io_t) (frame[byte])) ); */
+      /* //print_dbg("\r\n op_hid_word: 0x");  */
+      /* //print_dbg_hex( (int) frame[byte] ); */
+      /* //print_dbg(" ; 0x");  */
+      /* //print_dbg_hex( (int) ((io_t) (frame[byte])) ); */
       val = (io_t)(frame[byte]);
     }
     net_activate(op->outs[0], val, op);

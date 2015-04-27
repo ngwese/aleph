@@ -30,7 +30,7 @@ static scroll centerScroll;
 
 // initialize
 extern void play_init(void) {
-  print_dbg("\r\n play_init");
+  //print_dbg("\r\n play_init");
   // allocate regions
   region_alloc(&scrollRegion);
   // init scroll

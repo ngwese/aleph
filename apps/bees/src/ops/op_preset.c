@@ -84,8 +84,8 @@ static void op_preset_in_write(op_preset_t* preset, const io_t v) {
   int idx = op_to_int(v);
   preset->write = v;
   // store given preset
-  print_dbg("\r\n storing preset from operator, idx: ");
-  print_dbg_ulong(idx);
+  //print_dbg("\r\n storing preset from operator, idx: ");
+  //print_dbg_ulong(idx);
   if(idx >=0 && idx < NET_PRESETS_MAX) { 
     preset_store( idx );
   }

@@ -68,10 +68,10 @@ static void render_line(s16 idx, u8 fg) {
   s16 srcOpIdx; 
   region_fill(lineRegion, 0x0);
 
-  //  print_dbg("\r\n page_outs: render_line");
+  //  //print_dbg("\r\n page_outs: render_line");
   if(idx >= net_num_outs() ) { return; }
   if(targetSelect) { 
-    //      print_dbg(" , in targetSelect");
+    //      //print_dbg(" , in targetSelect");
     target = tmpTarget;
   } else {
     target = net_get_target(idx);
@@ -79,8 +79,8 @@ static void render_line(s16 idx, u8 fg) {
   srcOpIdx = net_out_op_idx(idx);
   targetOpIdx = net_in_op_idx(target);
 
-  /* print_dbg(" , target: "); */
-  /* print_dbg_ulong(target); */
+  /* //print_dbg(" , target: "); */
+  /* //print_dbg_ulong(target); */
 
   if(target >= 0) {
     //// output has target
@@ -101,7 +101,7 @@ static void render_line(s16 idx, u8 fg) {
     clearln();
     appendln("-> ");
     if(targetOpIdx >= 0) {
-      //      print_dbg(" , target is op in");
+      //      //print_dbg(" , target is op in");
       // target is operator input
       appendln_idx_lj(net_in_op_idx(target));
       appendln_char('.');
@@ -109,7 +109,7 @@ static void render_line(s16 idx, u8 fg) {
       appendln_char('/');
       appendln( net_in_name(target) );
     } else {
-      //      print_dbg(" , target is param in");
+      //      //print_dbg(" , target is param in");
       // target is parameter input
       appendln_idx_lj( (int)net_param_idx(target)); 
       appendln_char('.');
@@ -141,10 +141,10 @@ static void render_line(s16 idx, u8 fg) {
 // edit the current seleciton
 static void select_edit(s32 inc) {
   s16 tmptmp;
-  //  print_dbg("\r\n page_outs: select_edit");
+  //  //print_dbg("\r\n page_outs: select_edit");
   // enter target-select mode
   if(targetSelect == 0) {
-    //    print_dbg(" , set targetSelect mode");
+    //    //print_dbg(" , set targetSelect mode");
     targetSelect = 1;
     /// only change tmp target selection if connected
     /// thus, unconnected outputs should default in editor to last connection made.
@@ -153,12 +153,12 @@ static void select_edit(s32 inc) {
       tmpTarget = tmptmp;
     }
   }
-  /* print_dbg("\r\n tmpTarget: "); */
-  /* print_dbg_ulong(tmpTarget); */
+  /* //print_dbg("\r\n tmpTarget: "); */
+  /* //print_dbg_ulong(tmpTarget); */
   //  if(inc > 0) {
-    /* print_dbg(" , inc tmpTarget"); */
-    /* print_dbg(" , value: "); */
-    /* print_dbg_ulong(tmpTarget); */
+    /* //print_dbg(" , inc tmpTarget"); */
+    /* //print_dbg(" , value: "); */
+    /* //print_dbg_ulong(tmpTarget); */
     // increment tmpTarget
     tmpTarget += inc;
     if(tmpTarget >= net_num_ins() ) {
@@ -169,14 +169,14 @@ static void select_edit(s32 inc) {
     }
     /* ++tmpTarget; */
     /* if(tmpTarget == net_num_ins()) { */
-    /*   //      print_dbg(" , tmpTarget at max"); */
+    /*   //      //print_dbg(" , tmpTarget at max"); */
     /*   // scroll past all inputs : disconnect and wrap */
     /*   tmpTarget = -1; */
     /* }  */
   /* } else { */
   /*   --tmpTarget; */
   /*   if (tmpTarget == -2) { */
-  /*     //      print_dbg(" , tmpTarget at min"); */
+  /*     //      //print_dbg(" , tmpTarget at min"); */
   /*     //  scrolled down from disconnect: connect and wrap */
   /*     tmpTarget = net_num_ins() - 1; */
   /*   } */
@@ -227,8 +227,8 @@ static void select_scroll(s32 dir) {
 	if(newIdx > max) {
 	  newIdx = newIdx - (max+2);
 	}
-	/* print_dbg(" , rendering new line for idx: "); */
-	/* print_dbg_ulong(newIdx); */
+	/* //print_dbg(" , rendering new line for idx: "); */
+	/* //print_dbg_ulong(newIdx); */
 	render_line(newIdx, 0xa);
       }
       // render tmp region to bottom of scroll
@@ -247,8 +247,8 @@ static void select_scroll(s32 dir) {
 	if(newIdx < -1) {
 	  newIdx = newIdx + max + 2;
 	}
-	/* print_dbg(" , rendering new line for idx: "); */
-	/* print_dbg_ulong(newIdx); */
+	/* //print_dbg(" , rendering new line for idx: "); */
+	/* //print_dbg_ulong(newIdx); */
 	render_line(newIdx, 0xa);
       }
       // render tmp region to top of scroll
@@ -274,7 +274,7 @@ static void select_scroll(s32 dir) {
 /*     /// SCROLL DOWN */
 /*     // if selection is already zero, do nothing  */
 /*     if(*pageSelect == 0) { */
-/*       //      print_dbg("\r\n reached min selection in inputs scroll. "); */
+/*       //      //print_dbg("\r\n reached min selection in inputs scroll. "); */
 /*       return; */
 /*     } */
 /*     // remove highlight from old center */
@@ -302,7 +302,7 @@ static void select_scroll(s32 dir) {
 /*     // SCROLL UP */
 /*     // if selection is already max, do nothing  */
 /*     if(*pageSelect == max) { */
-/*       //      print_dbg("\r\n reached max selection in inputs scroll. "); */
+/*       //      //print_dbg("\r\n reached max selection in inputs scroll. "); */
 /*       return; */
 /*     } */
 /*     // remove highlight from old center */
@@ -410,7 +410,7 @@ static void show_foot(void) {
 // init
 void init_page_outs(void) {
   u8 i, n;
-  print_dbg("\r\n alloc OUTS page");
+  //print_dbg("\r\n alloc OUTS page");
   // allocate regions
   region_alloc(&scrollRegion);
   // init scroll
@@ -485,8 +485,8 @@ void handle_key_1(s32 val) {
   if(val == 0) { return; }
   if(check_key(1)) {
     if(altMode) {
-      print_dbg("\r\n splitting output: ");
-      print_dbg_ulong(*pageSelect);
+      //print_dbg("\r\n splitting output: ");
+      //print_dbg_ulong(*pageSelect);
       newOut = net_split_out(*pageSelect);
       *pageSelect = newOut;
       redraw_outs();
@@ -533,8 +533,8 @@ void handle_key_3(s32 val) {
     altMode = 0;
     if(inPresetSelect) {
       // load selected preset
-      print_dbg("\r\n recalling preset from ins page, idx:");
-      print_dbg_ulong(preset_get_select());
+      //print_dbg("\r\n recalling preset from ins page, idx:");
+      //print_dbg_ulong(preset_get_select());
       preset_recall(preset_get_select());
       inPresetSelect = 0;
       redraw_outs();
@@ -602,7 +602,7 @@ void handle_enc_1(s32 val) {
 
 /* void handle_enc_0(s32 val) { */
 
-/*   //  print_dbg("\r\n outs page: handling encoder 3"); */
+/*   //  //print_dbg("\r\n outs page: handling encoder 3"); */
 /*   if(targetSelect) { */
 /*     targetSelect = 0; */
 /*     redraw_outs(); */
@@ -650,13 +650,13 @@ void redraw_outs(void) {
   // FIXME: should be separate function i guess
   render_set_scroll(&centerScroll);
 
-  print_dbg("\r\n redraw_outs() ");
+  //print_dbg("\r\n redraw_outs() ");
 
   while(i<8) {
-    /* print_dbg("\r\n redraw_outs, line: "); */
-    /* print_dbg_ulong(i); */
-    /* print_dbg("index: "); */
-    /* print_dbg_ulong(n); */
+    /* //print_dbg("\r\n redraw_outs, line: "); */
+    /* //print_dbg_ulong(i); */
+    /* //print_dbg("index: "); */
+    /* //print_dbg_ulong(n); */
 
     render_line( n, 0xa );
     render_to_scroll_line(i, n == *pageSelect ? 1 : 0);
@@ -681,7 +681,7 @@ void redraw_outs_preset (void) {
 
   //  s32 preSel = preset_get_select();
 
-  print_dbg("\r\n redraw_outs_preset()");
+  //print_dbg("\r\n redraw_outs_preset()");
 
   //ppfffaaaggh
   /*

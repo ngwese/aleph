@@ -40,7 +40,7 @@ static op_in_fn op_step_in_fn[3] = {
 //----- extern function definition
 void op_step_init(void* mem) {
   u8 i;
-  //  print_dbg("\r\n op_step_init ");
+  //  //print_dbg("\r\n op_step_init ");
   op_step_t* op = (op_step_t*)mem;
 
   // superclass functions

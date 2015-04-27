@@ -248,8 +248,8 @@ void op_bignum_redraw(op_bignum_t* bignum) {
   // print value to text buffer
   op_print(tmpStr, bignum->val);
 
-  print_dbg("\r\n op_bignum_redraw , ");
-  print_dbg(tmpStr);
+  //print_dbg("\r\n op_bignum_redraw , ");
+  //print_dbg(tmpStr);
 
   // blank
   region_fill(&(bignum->reg), 0);
@@ -258,13 +258,13 @@ void op_bignum_redraw(op_bignum_t* bignum) {
   region_string_aa(&(bignum->reg), tmpStr, 0, 0, 1);
 
   // ascii art
-    /* print_dbg("\r\n"); */
+    /* //print_dbg("\r\n"); */
     /* for(i=0; i< OP_BIGNUM_PX_H; i++) { */
     /*   for(j=0; j< OP_BIGNUM_PX_W; j++) { */
-    /* 	if(*dat > 0) { print_dbg("#"); } else { print_dbg("_"); } */
+    /* 	if(*dat > 0) { //print_dbg("#"); } else { //print_dbg("_"); } */
     /* 	dat++; */
     /*   } */
-    /*   print_dbg("\r\n"); */
+    /*   //print_dbg("\r\n"); */
     /* } */
 
     // FIXME: this should NOT go here. 

@@ -98,17 +98,17 @@ void op_adc_deinit(void* adc) {
 
 // input enable / disable
 void op_adc_in_enable	(op_adc_t* adc, const io_t v) {
-  print_dbg("\r\n op_adc_in_enable: 0x");
-  print_dbg_hex((u32)(v));
+  //print_dbg("\r\n op_adc_in_enable: 0x");
+  //print_dbg_hex((u32)(v));
 
   if((v) > 0) {
-    print_dbg(" (input value high) ");
+    //print_dbg(" (input value high) ");
     if(adc->enable == 0) {
       adc->enable = OP_ONE;
       timers_set_adc(op_to_int(adc->period));
     }
   } else {
-    print_dbg(" (input value low) ");
+    //print_dbg(" (input value low) ");
     if(adc->enable > 0) {
       adc->enable = 0;
       timers_unset_adc();

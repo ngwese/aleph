@@ -38,7 +38,7 @@ static op_in_fn op_midi_cc_in_fn[2] = {
 //-------------------------------------------------
 //----- extern function definition
 void op_midi_cc_init(void* mem) {
-  //  print_dbg("\r\n op_midi_cc_init ");
+  //  //print_dbg("\r\n op_midi_cc_init ");
   op_midi_cc_t* op = (op_midi_cc_t*)mem;
 
   // superclass functions

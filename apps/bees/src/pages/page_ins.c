@@ -109,8 +109,8 @@ static void render_line(s16 idx, u8 fg) {
 // edit the current seleciton
 static void select_edit(s32 inc) {
 
-  print_dbg("\r\n editing ins page selection, idx: ");
-  print_dbg_ulong(*pageSelect);
+  //print_dbg("\r\n editing ins page selection, idx: ");
+  //print_dbg_ulong(*pageSelect);
 
   if(*pageSelect != -1) {
     // increment input value
@@ -140,12 +140,12 @@ static void select_scroll(s32 dir) {
     newSel -= (max + 2);
   }
 
-  //  print_dbg("\r\n scrolled selection on inputs page, old sel: ");
-  //  print_dbg_ulong(*pageSelect);
-  //  print_dbg(" ,  dir: ");
-  //  print_dbg_hex(dir);
-  //  print_dbg(" , new idx: ");
-  //  print_dbg_ulong(newSel);
+  //  //print_dbg("\r\n scrolled selection on inputs page, old sel: ");
+  //  //print_dbg_ulong(*pageSelect);
+  //  //print_dbg(" ,  dir: ");
+  //  //print_dbg_hex(dir);
+  //  //print_dbg(" , new idx: ");
+  //  //print_dbg_ulong(newSel);
 
   oldSel = *pageSelect;
   *pageSelect = newSel; 
@@ -166,8 +166,8 @@ static void select_scroll(s32 dir) {
 	if(newIdx > max) {
 	  newIdx = newIdx - (max+2);
 	}
-	//	print_dbg(" , rendering new line for idx: ");
-	//	print_dbg_ulong(newIdx);
+	//	//print_dbg(" , rendering new line for idx: ");
+	//	//print_dbg_ulong(newIdx);
 	render_line(newIdx, 0xa);
       }
       // render tmp region to bottom of scroll
@@ -186,8 +186,8 @@ static void select_scroll(s32 dir) {
 	if(newIdx < -1) {
 	newIdx = newIdx + max + 2;
 	}
-	//	print_dbg(" , rendering new line for idx: ");
-	//	print_dbg_ulong(newIdx);
+	//	//print_dbg(" , rendering new line for idx: ");
+	//	//print_dbg_ulong(newIdx);
 	render_line(newIdx, 0xa);
       }
       // render tmp region to top of scroll
@@ -335,7 +335,7 @@ static void show_foot(void) {
 // init
 void init_page_ins(void) {
   u8 i, n;
-  print_dbg("\r\n alloc INS page");
+  //print_dbg("\r\n alloc INS page");
   // allocate regions
   region_alloc(&scrollRegion);
   // init scroll
@@ -464,8 +464,8 @@ void handle_key_3(s32 val) {
     altMode = 0;
     if(inPresetSelect) {
       // load selected preset
-      print_dbg("\r\n recalling preset from ins page, idx:");
-      print_dbg_ulong(preset_get_select());
+      //print_dbg("\r\n recalling preset from ins page, idx:");
+      //print_dbg_ulong(preset_get_select());
       preset_recall(preset_get_select());
       inPresetSelect = 0;
       redraw_ins();
@@ -532,7 +532,7 @@ void redraw_ins(void) {
   // FIXME: should be separate function i guess
   render_set_scroll(&centerScroll);
 
-  print_dbg("\r\n redraw_ins() ");
+  //print_dbg("\r\n redraw_ins() ");
 
   while(i<8) {
 
@@ -569,7 +569,7 @@ void redraw_ins_preset ( void ) {
   s16 opIdx;
 
 
-  print_dbg("\r\n redraw_ins_preset() ");
+  //print_dbg("\r\n redraw_ins_preset() ");
 
 
   while(i<8) {
@@ -626,6 +626,6 @@ void redraw_ins_preset ( void ) {
     ++i;
     ++n;
   }
-  //  print_dbg("\r\n\r\n");
+  //  //print_dbg("\r\n\r\n");
   draw_preset_name();
 }

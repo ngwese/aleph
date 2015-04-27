@@ -158,7 +158,7 @@ void handle_key_0(s32 val) {
     //    files_store_scene_name(sceneData->desc.sceneName, 1);
     files_store_scene_name(sceneData->desc.sceneName);
 
-    print_dbg("\r\n stored scene, back to handler");
+    //print_dbg("\r\n stored scene, back to handler");
     
     font_string_region_clip(headRegion, "done writing.", 0, 0, 0xa, 0);
     headRegion->dirty = 1;
@@ -212,8 +212,8 @@ void handle_enc_3(s32 val) {
   } else {
     edit_string_dec_char(sceneData->desc.sceneName, cursor);
   }
-  print_dbg("\r\b edited scene name: ");
-  print_dbg(sceneData->desc.sceneName);
+  //print_dbg("\r\b edited scene name: ");
+  //print_dbg(sceneData->desc.sceneName);
   render_edit_string(headRegion, sceneData->desc.sceneName, SCENE_NAME_LEN, cursor);
 }
 
@@ -318,7 +318,7 @@ static void show_foot(void) {
 // init
 void init_page_scenes(void) {
   u8 i, n;
-  print_dbg("\r\n alloc SCENES page");
+  //print_dbg("\r\n alloc SCENES page");
   // allocate regions
   region_alloc(&scrollRegion);
   // init scroll
@@ -335,18 +335,18 @@ void init_page_scenes(void) {
 
 // select 
 void select_scenes(void) {
-  //  print_dbg("\r\n select SCENES... ");
+  //  //print_dbg("\r\n select SCENES... ");
   // assign global scroll region pointer
   // also marks dirty
-  //  print_dbg("\r\n set scroll region...");
+  //  //print_dbg("\r\n set scroll region...");
   render_set_scroll(&centerScroll);
-  //  print_dbg("\r\n fill head region...");
+  //  //print_dbg("\r\n fill head region...");
   // other regions are static in top-level render, with global handles
   region_fill(headRegion, 0x0);
   font_string_region_clip(headRegion, "SCENES", 0, 0, 0xf, 0x1);
   show_foot();
   // assign handlers
-  //  print_dbg("\r\n assign page handlers.....");
+  //  //print_dbg("\r\n assign page handlers.....");
   app_event_handlers[ kEventEncoder0 ]	= &handle_enc_0 ;
   app_event_handlers[ kEventEncoder1 ]	= &handle_enc_1 ;
   app_event_handlers[ kEventEncoder2 ]	= &handle_enc_2 ;

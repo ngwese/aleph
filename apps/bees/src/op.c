@@ -338,8 +338,8 @@ s16 op_init(op_t* op, op_id_t opId) {
 s16 op_deinit(op_t* op) {
   op_class_deinit f = op_registry[op->type].deinit;
   if(f != NULL) {
-    /* print_dbg("\r\n de-initializing operator at address 0x"); */
-    /* print_dbg_hex((u32)op); */
+    /* //print_dbg("\r\n de-initializing operator at address 0x"); */
+    /* //print_dbg_hex((u32)op); */
     (*f)(op);
   }
   return 0;
@@ -375,14 +375,14 @@ void op_set_in_val(op_t* op, s16 idx, io_t val) {
 
 // increment input value
 void op_inc_in_val(op_t* op, const s16 idx, const io_t inc) {
-  /* print_dbg("\r\n op_inc_in_val, "); */
-  /* print_dbg(" op @ 0x"); */
-  /* print_dbg_hex((u32)op); */
-  /* print_dbg(" old : 0x"); */
-  /* print_dbg_hex((u32)op_get_in_val(op, idx)); */
-  /* print_dbg(" inc : 0x"); */
-  /* print_dbg_hex((u32)inc); */
-  /* print_dbg(" new : 0x"); */
-  /* print_dbg_hex( (u32)op_sadd( op_get_in_val(op, idx), inc) ); */    
+  /* //print_dbg("\r\n op_inc_in_val, "); */
+  /* //print_dbg(" op @ 0x"); */
+  /* //print_dbg_hex((u32)op); */
+  /* //print_dbg(" old : 0x"); */
+  /* //print_dbg_hex((u32)op_get_in_val(op, idx)); */
+  /* //print_dbg(" inc : 0x"); */
+  /* //print_dbg_hex((u32)inc); */
+  /* //print_dbg(" new : 0x"); */
+  /* //print_dbg_hex( (u32)op_sadd( op_get_in_val(op, idx), inc) ); */    
   op_set_in_val( op, idx, op_sadd( op_get_in_val(op, idx), inc) );
 }

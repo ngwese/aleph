@@ -38,7 +38,7 @@ static op_in_fn op_midi_note_in_fn[1] = {
 //-------------------------------------------------
 //----- extern function definition
 void op_midi_note_init(void* mem) {
-  //  print_dbg("\r\n op_midi_note_init ");
+  //  //print_dbg("\r\n op_midi_note_init ");
   op_midi_note_t* op = (op_midi_note_t*)mem;
 
   // superclass functions
@@ -90,16 +90,16 @@ void op_midi_note_deinit(void* op) {
 //--- network input functions
 static void op_midi_note_in_chan(op_midi_note_t* op, const io_t v) {
   op->chanIo = v;
-  print_dbg("\r\n midi_note, setting channel from input: 0x");
-  print_dbg_hex((u32)v);
+  //print_dbg("\r\n midi_note, setting channel from input: 0x");
+  //print_dbg_hex((u32)v);
   // range is [-1, 16] in fix16... this is ugly, whatever
   //  if(op->chanIo > 0x00100000) { op->chanIo = 0x00100000; }
   //  if(op->chanIo < 0xffff0000) { op->chanIo = 0xffff0000; }
   op->chan = (s8)(op_to_int(op->chanIo));
   if(op->chan < -1) { op->chan = -1; }
   if(op->chan > 15) { op->chan = 15; }
-  print_dbg(" , channel: ");
-  print_dbg_hex((u32)(op->chan));
+  //print_dbg(" , channel: ");
+  //print_dbg_hex((u32)(op->chan));
 }
 
 
@@ -135,8 +135,8 @@ static void op_midi_note_handler(op_midi_t* op_midi, u32 data) {
       net_activate(op->outs[0], op_from_int(num), op);
       net_activate(op->outs[1], op_from_int(vel), op);
 
-      print_dbg("\r\n op_midi note off ; num: ");
-      print_dbg_ulong(num);
+      //print_dbg("\r\n op_midi note off ; num: ");
+      //print_dbg_ulong(num);
 
     } else {
       ch = (data & 0x0f000000) >> 24;

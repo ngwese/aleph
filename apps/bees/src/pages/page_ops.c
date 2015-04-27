@@ -78,7 +78,7 @@ void select_scroll(s8 dir) {
     /// SCROLL DOWN
     // if selection is already zero, do nothing 
     if(*pageSelect == 0) {
-      //      print_dbg("\r\n reached min selection in inputs scroll. ");
+      //      //print_dbg("\r\n reached min selection in inputs scroll. ");
       return;
     }
     // remove highlight from old center
@@ -107,7 +107,7 @@ void select_scroll(s8 dir) {
     // SCROLL UP
     // if selection is already max, do nothing 
     if(*pageSelect == max) {
-      //      print_dbg("\r\n reached max selection in inputs scroll. ");
+      //      //print_dbg("\r\n reached max selection in inputs scroll. ");
       return;
     }
     // remove highlight from old center
@@ -134,8 +134,8 @@ void select_scroll(s8 dir) {
 // render new operator type name
 void render_op_type(void) {
   const char* name = op_registry[userOpTypes[newOpType]].name;
-  //  print_dbg("\r\n new op selection: ");
-  //  print_dbg(name);
+  //  //print_dbg("\r\n new op selection: ");
+  //  //print_dbg(name);
   region_fill(headRegion, 0x0);
   clearln();
   appendln_char('+');
@@ -203,10 +203,10 @@ void handle_key_0(s32 val) {
   if(check_key(0)) {
     // select op's inputs on ins page
     pages[ePageIns].select = net_op_in_idx(*pageSelect, 0);
-    print_dbg("\r\n got 1st input index for selected op ( ");
-    print_dbg_ulong( *pageSelect );
-    print_dbg(", result : ");
-    print_dbg_ulong( net_op_in_idx(*pageSelect, 0));
+    //print_dbg("\r\n got 1st input index for selected op ( ");
+    //print_dbg_ulong( *pageSelect );
+    //print_dbg(", result : ");
+    //print_dbg_ulong( net_op_in_idx(*pageSelect, 0));
     // go to inputs page
     set_page(ePageIns);
     // reset keypress 
@@ -220,23 +220,23 @@ void handle_key_1(s32 val) {
   if(val == 0) { return; }
   if(check_key(1)) {
 
-    print_dbg("\r\n got 1st output index for selected op ( ");
-    print_dbg_ulong( *pageSelect );
-    print_dbg(", result : ");
-    print_dbg_ulong( net_op_out_idx(*pageSelect, 0));
+    //print_dbg("\r\n got 1st output index for selected op ( ");
+    //print_dbg_ulong( *pageSelect );
+    //print_dbg(", result : ");
+    //print_dbg_ulong( net_op_out_idx(*pageSelect, 0));
 
     // select op's outputs on outs page
     pages[ePageOuts].select = net_op_out_idx(*pageSelect, 0);
 
-    print_dbg("\r\n performed set-selection");
+    //print_dbg("\r\n performed set-selection");
 
     // go to outputs page
     set_page(ePageOuts);
     // reset keypress
     keyPressed = 255;
-    print_dbg("\r\n performed select-page");
+    //print_dbg("\r\n performed select-page");
     redraw_outs();
-    print_dbg("\r\n performed redraw");
+    //print_dbg("\r\n performed redraw");
   }
   show_foot();
 }
@@ -311,7 +311,7 @@ void handle_enc_0(s32 val) {
 // init
 void init_page_ops(void) {
   u8 i, n;
-  print_dbg("\r\n alloc OPS page");
+  //print_dbg("\r\n alloc OPS page");
   // allocate regions
   region_alloc(&scrollRegion);
   // init scroll
@@ -324,14 +324,14 @@ void init_page_ops(void) {
   //// need to actually set the scroll region at least temporarily
   render_set_scroll(&centerScroll);
   while(i<5) {
-    /* print_dbg("\r\n init ops page, line "); */
-    /* print_dbg_ulong(i); */
+    /* //print_dbg("\r\n init ops page, line "); */
+    /* //print_dbg_ulong(i); */
     render_line(i);
     render_to_scroll_line(n, i == 0 ? 1 : 0);
     ++n;
     ++i;
   }
-  print_dbg("\r\n done.");
+  //print_dbg("\r\n done.");
 }
 
 // select 

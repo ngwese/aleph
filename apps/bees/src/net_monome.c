@@ -72,7 +72,7 @@ op_monome_t* monomeOpFocus = NULL;
 /*   //// ok, this is never called... */
 /*   int i; */
 /*   for(i=0; i<100; i++) { */
-/*     print_dbg("\r\n !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); */
+/*     //print_dbg("\r\n !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); */
 /*   } */
 /*   monomeOpFocus = NULL; */
 /* } */
@@ -81,10 +81,10 @@ op_monome_t* monomeOpFocus = NULL;
 void net_monome_set_focus(op_monome_t* op_monome, u8 focus) {
   eMonomeDevice dev = monome_dev_type();
 
-  print_dbg("\r\n setting monome grid focus, op pointer: 0x");
-  print_dbg_hex((u32)op_monome);
-  print_dbg(" , value: ");
-  print_dbg_ulong(focus);
+  //print_dbg("\r\n setting monome grid focus, op pointer: 0x");
+  //print_dbg_hex((u32)op_monome);
+  //print_dbg(" , value: ");
+  //print_dbg_ulong(focus);
 
   //// FIXME: differentiate on device type (grid/arc)
 
@@ -98,14 +98,13 @@ void net_monome_set_focus(op_monome_t* op_monome, u8 focus) {
       monomeOpFocus->focus = 0;
     }
     if(dev == eDeviceGrid) {
-      print_dbg("\r\n setting grid_key handler");
+      //print_dbg("\r\n setting grid_key handler");
       monome_grid_key_handler = op_monome->handler;
     } else if(dev == eDeviceArc) {
-      print_dbg("\r\n setting ring_enc handler");
+      //print_dbg("\r\n setting ring_enc handler");
       monome_ring_enc_handler = op_monome->handler;
     } else {
-      print_dbg("\r\n warning! requested focus, but no handler was set. "
-		" bad device type maybe?");
+      //print_dbg("\r\n warning! requested focus, but no handler was set. bad device type maybe?");
       // aha... this is ending up here on default scene load. 
       // maybe just a really gruesome delay in the monome comms, needs work 
       // this is kind of bad, but just set both grid and arc handlers by default.
@@ -153,13 +152,13 @@ void net_monome_connect(void) {
     timers_set_monome();
   } else {
     // already connected... oops?
-    print_dbg("\r\n net_monome_connect, already connected? oops");
+    //print_dbg("\r\n net_monome_connect, already connected? oops");
   }
 }
 
 // disconnect
 void net_monome_disconnect(void) {
-  print_dbg("\r\n net_monome_disconnect");
+  //print_dbg("\r\n net_monome_disconnect");
   monomeConnect = 0;
   //  monomeOpFocus = NULL;
   //  monome_grid_key_handler = (monome_handler_t)&dummyHandler;

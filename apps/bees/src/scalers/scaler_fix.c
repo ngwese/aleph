@@ -17,17 +17,17 @@
 void scaler_fix_init(void* scaler) {
   ParamScaler* sc = (ParamScaler*)scaler;
 
-  print_dbg("\r\n initializing fixed-point scaler for param, label: ");
-  print_dbg(sc->desc->label);
+  //print_dbg("\r\n initializing fixed-point scaler for param, label: ");
+  //print_dbg(sc->desc->label);
 
   sc->inMin = scaler_fix_in(scaler, sc->desc->min);
   sc->inMax = scaler_fix_in(scaler, sc->desc->max);
 
-  /* print_dbg("\r\n init fixed-point linear scaler"); */
-  /* print_dbg(", input min: 0x"); */
-  /* print_dbg_hex(sc->inMin); */
-  /* print_dbg(", input max: 0x"); */
-  /* print_dbg_hex(sc->inMax); */
+  /* //print_dbg("\r\n init fixed-point linear scaler"); */
+  /* //print_dbg(", input min: 0x"); */
+  /* //print_dbg_hex(sc->inMin); */
+  /* //print_dbg(", input max: 0x"); */
+  /* //print_dbg_hex(sc->inMax); */
 }
 
 s32 scaler_fix_val(void* scaler, io_t in) {
@@ -41,10 +41,10 @@ s32 scaler_fix_val(void* scaler, io_t in) {
     norm >>= (32 - IO_BITS - r);
   }
 
-  /* print_dbg("\r\n linear-fixed scaler, get value; input: 0x"); */
-  /* print_dbg_hex(in); */
-  /* print_dbg(", normalized: 0x"); */
-  /* print_dbg_hex(norm); */
+  /* //print_dbg("\r\n linear-fixed scaler, get value; input: 0x"); */
+  /* //print_dbg_hex(in); */
+  /* //print_dbg(", normalized: 0x"); */
+  /* //print_dbg_hex(norm); */
 
   // set full-scale
   return norm;
@@ -55,18 +55,18 @@ void scaler_fix_str(char* dst, void* scaler, io_t in) {
   s32 norm = in << (32 - IO_BITS);
   u8 r = ((ParamScaler*)scaler)->desc->radix;
 
-  /* print_dbg("\r\n linear-fixed scaler, get string; input: 0x"); */
-  /* print_dbg_hex(in); */
-  /* print_dbg(" , normalized: 0x"); */
-  /* print_dbg_hex(norm); */
+  /* //print_dbg("\r\n linear-fixed scaler, get string; input: 0x"); */
+  /* //print_dbg_hex(in); */
+  /* //print_dbg(" , normalized: 0x"); */
+  /* //print_dbg_hex(norm); */
 
   // rshift back for display, depending on radix
   if(r < 32 - IO_BITS) {
     norm >>= (32 - IO_BITS - r);
   }
 
-  /* print_dbg(" , adjusted for radix: 0x"); */
-  /* print_dbg_hex(norm); */
+  /* //print_dbg(" , adjusted for radix: 0x"); */
+  /* //print_dbg_hex(norm); */
    print_fix16(dst, norm); 
 }
 

@@ -11,11 +11,11 @@
 /*   op_t* op; */
 /*   s32 i, j; */
 
-/*   // print_dbg("\r\n adding operator; type: "); */
-/*   // print_dbg_ulong(opId); */
+/*   // //print_dbg("\r\n adding operator; type: "); */
+/*   // //print_dbg_ulong(opId); */
 
 /*   if (net->numOps >= NET_OPS_MAX) { */
-/*     // print_dbg("\r\n too many ops already; bail "); */
+/*     // //print_dbg("\r\n too many ops already; bail "); */
 /*     return -1; */
 /*   } */
 
@@ -28,13 +28,13 @@
 /*   } */
 
 /*   if(opIdx == -1) { */
-/*     // print_dbg("\r\n out of operator slots; bail "); */
+/*     // //print_dbg("\r\n out of operator slots; bail "); */
 /*     return -1; */
 /*   } */
 
 /*   op = malloc(op_registry[opId].size); */
 /*   if( op == NULL ) {  */
-/*     // print_dbg("\r\n out of memory; bail "); */
+/*     // //print_dbg("\r\n out of memory; bail "); */
 /*     return -1; */
 /*   } */
 
@@ -53,7 +53,7 @@
 /*       } */
 /*     } */
 /*     if(inIdx == -1) { */
-/*       // print_dbg("\r\n no free input slots; bail "); */
+/*       // //print_dbg("\r\n no free input slots; bail "); */
 /*       return -1; */
 /*     } */
 /*     // save the index */
@@ -72,7 +72,7 @@
 /*     } */
     
 /*     if(outIdx == -1) { */
-/*       // print_dbg("\r\n no free output slots; bail "); */
+/*       // //print_dbg("\r\n no free output slots; bail "); */
 /*       return -1; */
 /*     } */
 /*     // save the index */
@@ -81,10 +81,10 @@
 
 /*   net->ops[opIdx] = op; */
 
-/*   // print_dbg("\r\n assigned operator at slot: "); */
-/*   // print_dbg_ulong(opIdx);  */
-/*   // print_dbg(" to memory at: "); */
-/*   // print_dbg_hex(op); */
+/*   // //print_dbg("\r\n assigned operator at slot: "); */
+/*   // //print_dbg_ulong(opIdx);  */
+/*   // //print_dbg(" to memory at: "); */
+/*   // //print_dbg_hex(op); */
 
 /*   // update op allocation flag */
 /*   BITSET(net->opsUsed, opIdx); */
