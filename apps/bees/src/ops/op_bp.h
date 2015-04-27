@@ -14,8 +14,7 @@ typedef struct bp_value_struct {
 } bp_value_t;
 
 typedef struct bp_list_struct {
-  u8 last;
-  //io_t clear_value;
+  s8 last;
   bp_value_t keys[OP_BP_KEY_COUNT];
 } bp_list_t;
 

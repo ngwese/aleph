@@ -174,6 +174,7 @@ static inline bool bp_list_is_empty(bp_list_t* l) {
 
 static inline void bp_list_clear_index(bp_list_t* l, const u8 index) {
   l->keys[index].pos = OP_MAX_VAL;
+  //l->keys[index].pos = 0;
   l->keys[index].value = 0;
 }
 
@@ -194,7 +195,8 @@ static u8 bp_list_insert(bp_list_t* l, const io_t pos, const io_t v) {
     print_dbg("\r\n    bp: list_insert at head (was empty)");
   }
   else {
-    u8 lower = bp_list_lower_index(l, pos);
+    s8 lower = bp_list_lower_index(l, pos);
+    // FIXME: this should never be -1
     if (lower == l->last && l->last < INDEX_MAX) {
       // tail; append
       l->last++;
@@ -240,7 +242,7 @@ static s8 bp_list_lower_index(bp_list_t* l, const io_t pos) {
   else {
     i = 0; // MAINT: check this logic
     for (; i <= l->last; i++)
-      if (pos < bp_list_pos_at(l, i))
+      if (pos <= bp_list_pos_at(l, i))
         break;
   }
 
@@ -445,12 +447,14 @@ static bool op_bp_do_key(op_bp_t* op, const u8 chan) {
 
   if (bp_list_is_empty(l)) {
     print_dbg(" empty, first key");
-    out_val = op->in[chan];
+    out_val = 0;
     bp_list_insert(l, op->pos, out_val);
     did_key = true;
   }
   else {
     s8 idx = bp_list_nearest_index(l, op->pos);
+    print_dbg(" nearest i: 0x");
+    print_dbg_hex(idx);
     if (idx >= 0 && bp_list_pos_at(l, idx) == op->pos) {
     // we are on a key, just modify it
       out_val = op_sadd(l->keys[idx].value, op->in[chan]);
@@ -467,7 +471,8 @@ static bool op_bp_do_key(op_bp_t* op, const u8 chan) {
       did_key = true;
     }
   }
-  
+
+  op->in[chan] = 0; // "consume" the in delta so repeated keys do acc
   op->current[chan] = out_val;
   print_dbg("\r\n bp: do_key done; outputting: 0x");
   print_dbg_hex(op->current[chan]);
