@@ -49,6 +49,7 @@ const op_id_t userOpTypes[NUM_USER_OP_TYPES] = {
   eOpMidiOutNote,
   eOpMod,
   eOpMul,
+  eOpPattern,
   eOpRandom,
   eOpRoute,
   eOpRoute8,
@@ -74,11 +75,11 @@ const op_id_t userOpTypes[NUM_USER_OP_TYPES] = {
 const op_desc_t op_registry[numOpClasses] = {
   {
     .name = "SW",
-    .size = sizeof(op_sw_t), 
-    .init = &op_sw_init, 
+    .size = sizeof(op_sw_t),
+    .init = &op_sw_init,
     .deinit = NULL
   }, {
-    .name = "ENC", 
+    .name = "ENC",
     .size = sizeof(op_enc_t),
     .init = &op_enc_init,
     .deinit = NULL
@@ -94,7 +95,7 @@ const op_desc_t op_registry[numOpClasses] = {
     .deinit = NULL
   }, {
     .name = "GATE",
-    .size = sizeof(op_gate_t), 
+    .size = sizeof(op_gate_t),
     .init = &op_gate_init,
     .deinit = NULL
   }, {
@@ -156,42 +157,42 @@ const op_desc_t op_registry[numOpClasses] = {
     .name = "RANDOM",
     .size = sizeof(op_random_t),
     .init = &op_random_init,
-    .deinit = NULL    
+    .deinit = NULL
   }, {
     .name = "LIST8",
     .size = sizeof(op_list8_t),
     .init = &op_list8_init,
-    .deinit = NULL    
+    .deinit = NULL
   }, {
     .name = "THRESH",
     .size = sizeof(op_thresh_t),
     .init = &op_thresh_init,
-    .deinit = NULL    
+    .deinit = NULL
   }, {
     .name = "MOD",
     .size = sizeof(op_mod_t),
     .init = &op_mod_init,
-    .deinit = NULL    
+    .deinit = NULL
   }, {
     .name = "BITS",
     .size = sizeof(op_bits_t),
     .init = &op_bits_init,
-    .deinit = NULL    
+    .deinit = NULL
   }, {
     .name = "IS",
     .size = sizeof(op_is_t),
     .init = &op_is_init,
-    .deinit = NULL    
+    .deinit = NULL
   }, {
     .name = "LOGIC",
     .size = sizeof(op_logic_t),
     .init = &op_logic_init,
-    .deinit = NULL    
+    .deinit = NULL
   }, {
     .name = "LIST2",
     .size = sizeof(op_list2_t),
     .init = &op_list2_init,
-    .deinit = NULL    
+    .deinit = NULL
   }, {
     .name = "LIFE",
     .size = sizeof(op_life_t),
@@ -201,7 +202,7 @@ const op_desc_t op_registry[numOpClasses] = {
     .name = "HISTORY",
     .size = sizeof(op_history_t),
     .init = &op_history_init,
-    .deinit = NULL    
+    .deinit = NULL
   }, {
     .name = "BIGNUM",
     .size = sizeof(op_bignum_t),
@@ -246,7 +247,7 @@ const op_desc_t op_registry[numOpClasses] = {
     .name = "STEP",
     .size = sizeof(op_step_t),
     .init = &op_step_init,
-    .deinit = &op_step_deinit   
+    .deinit = &op_step_deinit
   }, {
     .name = "ROUTE8",
     .size = sizeof(op_route8_t),
@@ -256,27 +257,27 @@ const op_desc_t op_registry[numOpClasses] = {
     .name = "MP",   // CASCADES
     .size = sizeof(op_cascades_t),
     .init = &op_cascades_init,
-    .deinit = &op_cascades_deinit   
+    .deinit = &op_cascades_deinit
   }, {
     .name = "BARS",
     .size = sizeof(op_bars_t),
     .init = &op_bars_init,
-    .deinit = &op_bars_deinit   
+    .deinit = &op_bars_deinit
   }, {
     .name = "SERIAL",
     .size = sizeof(op_serial_t),
     .init = &op_serial_init,
-    .deinit = &op_serial_deinit   
+    .deinit = &op_serial_deinit
   }, {
     .name = "HID",
     .size = sizeof(op_hid_word_t),
     .init = &op_hid_word_init,
-    .deinit = &op_hid_word_deinit   
+    .deinit = &op_hid_word_deinit
   }, {
     .name = "WW",
     .size = sizeof(op_ww_t),
     .init = &op_ww_init,
-    .deinit = &op_ww_deinit   
+    .deinit = &op_ww_deinit
   }, {
     .name = "ARC",
     .size = sizeof(op_marc_t),
@@ -307,7 +308,12 @@ const op_desc_t op_registry[numOpClasses] = {
     .size = sizeof(op_change_t),
     .init = &op_change_init,
     .deinit = NULL
-  },
+  }, {
+    .name = "PATTERN",
+    .size = sizeof(op_pattern_t),
+    .init = &op_pattern_init,
+    .deinit = NULL
+  }
 };
 
 
@@ -332,7 +338,7 @@ s16 op_init(op_t* op, op_id_t opId) {
   return 0;
 }
 
-// this is the order of operators as presented to the user 
+// this is the order of operators as presented to the user
 
 // de-initialize operator
 s16 op_deinit(op_t* op) {
@@ -350,7 +356,7 @@ s16 op_deinit(op_t* op) {
 const char* op_in_name(op_t* op, const u8 idx) {
   /// names now have spaces zapped to nulls.
   // so we can safely return direct pointer to name string
-  return (op->inString + (inStringChars * idx));  
+  return (op->inString + (inStringChars * idx));
 }
 
 const char* op_out_name(op_t* op, const u8 idx) {
@@ -370,7 +376,7 @@ io_t op_get_in_val(op_t* op, s16 idx) {
 
 // set input value
 void op_set_in_val(op_t* op, s16 idx, io_t val) {
-  (*(op->in_fn[idx]))(op, val);  
+  (*(op->in_fn[idx]))(op, val);
 }
 
 // increment input value
@@ -383,6 +389,6 @@ void op_inc_in_val(op_t* op, const s16 idx, const io_t inc) {
   /* print_dbg(" inc : 0x"); */
   /* print_dbg_hex((u32)inc); */
   /* print_dbg(" new : 0x"); */
-  /* print_dbg_hex( (u32)op_sadd( op_get_in_val(op, idx), inc) ); */    
+  /* print_dbg_hex( (u32)op_sadd( op_get_in_val(op, idx), inc) ); */
   op_set_in_val( op, idx, op_sadd( op_get_in_val(op, idx), inc) );
 }

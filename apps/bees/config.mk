@@ -16,7 +16,7 @@ include ../../avr32_lib/avr32_lib_src.mk
 
 
 # add C source files from application
-# please keep this alphabetized... 
+# please keep this alphabetized...
 CSRCS += \
 	$(APP_DIR)/src/app_bees.c \
 	$(APP_DIR)/src/app_timers.c \
@@ -71,6 +71,7 @@ CSRCS += \
 	$(APP_DIR)/src/ops/op_mul.c \
 	$(APP_DIR)/src/ops/op_monome_arc.c \
 	$(APP_DIR)/src/ops/op_monome_grid_raw.c \
+	$(APP_DIR)/src/ops/op_pattern.c \
 	$(APP_DIR)/src/ops/op_preset.c \
 	$(APP_DIR)/src/ops/op_random.c \
 	$(APP_DIR)/src/ops/op_route.c \
@@ -109,7 +110,7 @@ CSRCS += \
 # List of assembler source files.
 ASSRCS +=
 
-# List of include paths.	
+# List of include paths.
 INC_PATH += \
 	$(APP_DIR)	           \
 	$(APP_DIR)/src \
@@ -117,16 +118,16 @@ INC_PATH += \
 	$(APP_DIR)/../../../avr32-toolchain-linux/include
 
 # Additional search paths for libraries.
-LIB_PATH += 
+LIB_PATH +=
 
 # List of libraries to use during linking.
-LIBS += 
+LIBS +=
 
 # Extra flags to use when archiving.
-ARFLAGS += 
+ARFLAGS +=
 
 # Extra flags to use when assembling.
-ASFLAGS += 
+ASFLAGS +=
 
 # extra flags for compiling
 # CFLAGS += --verbose

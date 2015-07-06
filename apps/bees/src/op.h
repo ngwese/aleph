@@ -2,7 +2,7 @@
  * aleph-avr32
  *
  * base classes implementing arbitrary control flow networks
- * 
+ *
  * derived classes need this,
  * other modules should hopefully only need the interface header (net.h)
  */
@@ -20,9 +20,9 @@
 #define OP_OUTS_MAX 32
 
 // const array of user-creatable operator types
-#define NUM_USER_OP_TYPES 43
+#define NUM_USER_OP_TYPES 44
 
-//---- flags enum; 
+//---- flags enum;
 typedef enum {
   eOpFlagSys,  // op is system-owned
   eOpFlagMenu, // op has a submenu function
@@ -78,7 +78,7 @@ typedef enum {
   eOpCascades,
   eOpBars,
   eOpSerial,
-  eOpHid,  
+  eOpHid,
   eOpWW,
   eOpMonomeArc,
   eOpFade,
@@ -86,9 +86,10 @@ typedef enum {
   eOpShl,
   eOpShr,
   eOpChange,
+  eOpPattern,
   //  eOpMidiBend,
   //  eOpMidiTouch,
-  numOpClasses // dummy/count 
+  numOpClasses // dummy/count
 } op_id_t;
 
 //--- function types
@@ -109,7 +110,7 @@ typedef u8* (*op_unpickle_fn)(void* op, const u8* src);
 // ---- output type
 // an index into the global output table
 // a negative index is not evaluated
-typedef s16 op_out_t; 
+typedef s16 op_out_t;
 
 // ---- op_t
 // base class for all processors in a control network
@@ -128,7 +129,7 @@ typedef struct op_struct {
   // dynamic array of pointers to input values
   volatile io_t ** in_val;
   // array of indices for output targets.
-  op_out_t * out; 
+  op_out_t * out;
   // name string
   const char* opString;
   // input names concatenated into a single string

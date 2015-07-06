@@ -1,7 +1,7 @@
 /* op_derived.h
    bees
    aleph
-   
+
    this header should include all extant derived operator classes.
 */
 
@@ -39,6 +39,7 @@
 #include "ops/op_monome_arc.h"
 #include "ops/op_monome_grid_raw.h"
 #include "ops/op_mul.h"
+#include "ops/op_pattern.h"
 #include "ops/op_preset.h"
 #include "ops/op_serial.h"
 #include "ops/op_shl.h"
@@ -59,7 +60,7 @@
 #include "ops/op_ww.h"
 
 // let's keep this list alphabetical so we can easily see whether something is included.
- 
+
 // these things, on the other hand,  should remain chronological:
 // - the class type enumeration in op.h
 // - the class registry array in op.c
