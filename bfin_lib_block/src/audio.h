@@ -31,20 +31,9 @@ buffer_t *audioIn;
 buffer_t *audioOut;
 
 //! I/O buffers
-__attribute__((l1_data_A))
-__attribute__((aligned(32)))
 extern buffer_t inputChannels0;
-
-__attribute__((l1_data_A))
-__attribute__((aligned(32)))
 extern buffer_t inputChannels1;
-
-__attribute__((l1_data_B))
-__attribute__((aligned(32)))
 extern buffer_t outputChannels0;
-
-__attribute__((l1_data_B))
-__attribute__((aligned(32)))
 extern buffer_t outputChannels1;
 
 
