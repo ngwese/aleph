@@ -5,4 +5,7 @@
 
 extern void init_dma(void);
 
+extern void dma_dac_update(void);
+extern short dma_dac_running(void);
+
 #endif

@@ -80,8 +80,13 @@ void init_codec(void) {
 void enable_dma_sport0(void) { 
   *pDMA2_CONFIG	= (*pDMA2_CONFIG | DMAEN);
   *pDMA1_CONFIG	= (*pDMA1_CONFIG | DMAEN);
-  *pSPORT0_TCR1 	= (*pSPORT0_TCR1 | TSPEN);
-  *pSPORT0_RCR1 	= (*pSPORT0_RCR1 | RSPEN);
+  *pSPORT0_TCR1	= (*pSPORT0_TCR1 | TSPEN);
+  *pSPORT0_RCR1	= (*pSPORT0_RCR1 | RSPEN);
+}
+
+void enable_dma_sport1(void) { 
+  *pDMA4_CONFIG	= (*pDMA4_CONFIG | DMAEN);
+  *pSPORT1_TCR1	= (*pSPORT1_TCR1 | TSPEN);
 }
 
 
@@ -89,20 +94,23 @@ int main(void) {
 
   init_clock();
   init_flags();
+
   READY_LO;
   
   init_ebiu();
-
+  init_cv();
+  
   init_spi_slave();
     
   init_sport0();
+  init_sport1();
   init_interrupts();
   init_dma();
-
 
   module_init();
   
   enable_dma_sport0();
+  enable_dma_sport1();
 
   // reset the codec
   init_codec();

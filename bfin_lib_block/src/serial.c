@@ -67,16 +67,41 @@ void init_sport1(void) {
   //// frame sync required           : TFSR  = 1
   //// no companding                 : TDTYPE = 00
   //// MSB first                     : TLSBIT = 0  
-  *pSPORT1_TCR1 = ITCLK | ITFS | TFSR;
- 
+  //  *pSPORT1_TCR1 = ITCLK | ITFS | TFSR;
+
+  //// TFS/clk driven w/ falling edge : TCKFE  = 1
+  //// late frame sync                : LATFS  = 1  // sync states active for the entire word 
+  //// TFS active low                 : LTFS   = 1   
+  //// data-dependent TFS             : DITFS  = 0
+  //// internal clock                 : ITCLK  = 1
+  //// internal TFS                   : ITFS   = 1
+  //// frame sync required            : TFSR   = 1
+  //// no companding                  : TDTYPE = 00
+  //// MSB first                      : TLSBIT = 0  
+
+  //  Internally generated frame syncs remain asserted for the entire
+  //  length of the data word in late framing mode. 
+
+////  *pSPORT1_TCR1 = TCKFE | LATFS | ITCLK | ITFS | TFSR;
+  *pSPORT1_TCR1 = TCKFE | LATFS | LTFS | ITCLK | ITFS | TFSR;
+
+
+
+  
   //// secondary side enabled : TXSE  = 1
   ///// 24-bit word length
   //     *pSPORT1_TCR2 = 23 | TXSE ;
   //// 25-bit cause DACs need an extra cycle to recover, ugggh
-  *pSPORT1_TCR2 = 24 | TXSE ;
+  //*pSPORT1_TCR2 = 24 | TXSE ;
+  *pSPORT1_TCR2 = SLEN_24 | TXSE;   // why TXSE??
+  
+
   // tclk = sclk / ( 2 x (div + 1)
   /// DAC datasheet indicates we can go up to 50Mhz
   // here's 27 Mhz
   *pSPORT1_TCLKDIV = 1;
 
+
+  // do we need to set TFSDIV to properly frame the whole word?
+  //*pSPORT1_TFSDIV = ???
 }

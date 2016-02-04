@@ -3,6 +3,7 @@
 #include "ccblkfn.h"
 
 #include "audio.h"
+#include "cv.h"
 #include "dma.h"
 
 // use large descriptor mode to perform pingpong and deinterleave
@@ -31,6 +32,7 @@ dma_desc_t descRx0 = { &descRx1, inputChannels0 };
 dma_desc_t descTx1 = { NULL, outputChannels1 };
 dma_desc_t descTx0 = { &descTx1, outputChannels0 };
 
+#define CV_DMA_CONFIG ( 0x0000 | WDSIZE_32 )
 
 void init_dma(void) {
 
@@ -56,4 +58,20 @@ void init_dma(void) {
   *pDMA2_Y_MODIFY = Y_MOD;
   *pDMA2_NEXT_DESC_PTR = &descTx0;
   *pDMA2_CONFIG = DMA_CONFIG;
+
+  // map DMA4 to sport1 TX
+  *pDMA4_PERIPHERAL_MAP = 0x4000;
+
+  *pDMA4_X_COUNT = CV_CHANNELS;
+  *pDMA4_X_MODIFY = CV_SAMPLESIZE;
+  *pDMA4_START_ADDR = (void *)&cvTxBuf;
+  *pDMA4_CONFIG = CV_DMA_CONFIG;
+}
+
+inline void dma_dac_update(void) {
+  *pDMA4_CONFIG = CV_DMA_CONFIG | DMAEN;
+}
+
+inline short dma_dac_running(void) {
+  return *pDMA4_IRQ_STATUS & 0xfff7;
 }
