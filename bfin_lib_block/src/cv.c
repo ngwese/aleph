@@ -16,7 +16,12 @@
 /// refactor; we need access to dma.c contents here
 
 //! output buffers
+__attribute__((l1_data_B))
+__attribute__((aligned(32)))
 cv_buffer_t cvOut = { 0, 0, 0, 0 };
+
+__attribute__((l1_data_B))
+__attribute__((aligned(32)))
 cv_buffer_t cvTxBuf = { 0, 0, 0, 0 };
 
 void init_cv(void) {

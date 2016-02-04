@@ -9,6 +9,7 @@
 #define _ALEPH_MODULE_H_
 
 #include "audio.h"
+#include "cv.h"
 #include "module_common.h"
 #include "param_common.h"
 #include "types.h"

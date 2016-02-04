@@ -5,20 +5,16 @@
 
 #define CV_CHANNELS 4
 #define CV_SAMPLESIZE 4
+#define CV_MAX_VALUE 0x7fffffff
 
 //! type for cv dac buffer
 typedef fract32 cv_buffer_t[CV_CHANNELS];
 
 //! pending cv/dac value buffer
-__attribute__((l1_data_B))
-__attribute__((aligned(32)))
 extern cv_buffer_t cvOut;
 
 //! dma tx buffer
-__attribute__((l1_data_B))
-__attribute__((aligned(32)))
 extern cv_buffer_t cvTxBuf;
-
 
 // initialize cv dac
 extern void init_cv(void);
