@@ -332,9 +332,11 @@ void scene_read_buf(void) {
 
   delay_ms(5);
 
-  render_boot("enabling audio");  // enable audio processing
+  render_boot("enabling audio...");  // enable audio processing
   bfin_enable();
-  
+  render_boot("...audio enabled");
+
+  render_boot("resuming app");
   app_resume();
 }
 

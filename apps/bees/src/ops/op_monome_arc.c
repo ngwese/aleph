@@ -164,7 +164,7 @@ static void op_marc_handler(op_monome_t* op_monome, u32 data) {
   net_activate(op, 0, (io_t)n);
   net_activate(op, 1, (io_t)v);
 
-    if(op->loop) {
+  if(op->loop) {
     a = op->vals[n] + v;
     if(a<0) a=0;
     else if(a>255) a=255;

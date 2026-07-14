@@ -96,6 +96,11 @@ static void dummy_handler(s32 data) {
 }
 // static void dummy_render(void) { ;; }
 
+static void monome_post_disconnect(void) {
+    event_t e = {.type = kEventMonomeDisconnect };
+    event_post(&e);
+}
+
 // core event handlers
 static void handler_FtdiConnect(s32 data) {
   if(!launch) {
@@ -106,8 +111,7 @@ static void handler_FtdiConnect(s32 data) {
 }
 static void handler_FtdiDisconnect(s32 data) {
     /// FIXME: assuming that FTDI == monome
-    event_t e = {.type = kEventMonomeDisconnect };
-    event_post(&e);
+    monome_post_disconnect();
 }
 
 static void handler_MonomeConnect(s32 data) {
@@ -124,14 +128,13 @@ static void handler_SerialConnect(s32 data) {
         print_dbg("\r\n got serial/cdc device connection, saving flag for app launch");
         cdcConnect = 1;
     }
+    // assumes any cdc device is a grid/arc, this will issue a MonomeConnect event to app
     monome_setup_mext();
 }
 
 static void handler_SerialDisconnect(s32 data) {
-    if (!launch) {
-        print_dbg("\r\n got serial/cdc device dis-connection, saving flag for app launch");
-        cdcConnect = 0;
-    }
+    // FIXME: assumes any cdc device is a grid/arc
+    monome_post_disconnect();
 }
 
 static void handler_MonomePoll(s32 data) { monome_read_serial(); }

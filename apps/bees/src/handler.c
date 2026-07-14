@@ -108,11 +108,23 @@ static void handle_Switch7(s32 data) {
 } 
 
 static void handle_MonomeConnect(s32 data) {
-  net_monome_connect();
   print_dbg("\r\n received MonomeConnect event in BEES");
+  switch (monome_device()) {
+  case eDeviceGrid:
+    print_dbg(", for GRID");
+    break;
+  case eDeviceArc:
+    print_dbg(", ARC");
+    break;
+  default:
+    print_dbg(", for unknown device");
+    break;
+  }
+  net_monome_connect();
 }
 
 static void handle_MonomeDisconnect(s32 data) { 
+  print_dbg("\r\n received MonomeDisconnect event in BEES");
   net_monome_disconnect();
 }
 
@@ -133,17 +145,13 @@ static void handle_MonomeGridKey(s32 data) {
   (*monome_grid_key_handler)(monomeOpFocus, data);
 }
 
-/* static void handle_MonomeGridTilt(s32 data) {  */
-/*   // TODO: update ops */
-/* } */
-
 static void handle_MonomeRingEnc(s32 data) {
-  (*monome_ring_enc_handler)(monomeOpFocus, data);
+  if (monome_ring_enc_handler) {
+    (*monome_ring_enc_handler)(monomeOpFocus, data);
+  } else {
+    print_dbg("\r\n got handle_MonomeRingEnc but no op handler in focus");
+  }
 }
-
-/* static void handle_MonomeRingKey(s32 data) {  */
-/*   // TODO: update ops */
-/* } */
 
 static void handle_MidiConnect(s32 data) {
   timers_set_midi();
@@ -203,8 +211,6 @@ void assign_bees_event_handlers(void) {
   app_event_handlers[ kEventMonomeDisconnect ]	= &handle_MonomeDisconnect ;
   app_event_handlers[ kEventMonomeGridKey ]	= &handle_MonomeGridKey ;
   app_event_handlers[ kEventMonomeRingEnc ]	= &handle_MonomeRingEnc ;
-  //  app_event_handlers[ kEventMonomeGridTilt ]	= &handle_MonomeGridTilt ;
-  //  app_event_handlers[ kEventMonomeRingKey ]	= &handle_MonomeRingKey ;
   app_event_handlers[ kEventMidiConnect ]	= &handle_MidiConnect ;
   app_event_handlers[ kEventMidiDisconnect ]	= &handle_MidiDisconnect ;
   app_event_handlers[ kEventMidiPacket ]	= &handle_MidiPacket ;
