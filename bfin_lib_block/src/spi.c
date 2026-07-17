@@ -22,6 +22,10 @@ static u8 idx;
 // temp value
 static ParamValueSwap pval;
 
+// xrun SPI readout snapshot (16 bytes = 4 x u32 BE)
+static u8 xrunOut[16];
+static u8 xrunOutIdx;
+
 // -- static functions:
 static void spi_set_param(u32 idx, ParamValue pv) {
   // set the raw value here,
@@ -60,12 +64,49 @@ u8 spi_handle_byte(u8 rx) {
       break;
 
     case MSG_ENABLE_AUDIO:
+      audio_reset_xruns();
       processAudio = 1;
       return processAudio;
       break;
     case MSG_DISABLE_AUDIO:
       processAudio = 0;
       return processAudio;
+      break;
+
+    case MSG_GET_XRUN_COM: {
+      ParamValueSwap xr[4];
+#if MODULE_AUDIO_XRUN_DETECT
+      xr[0].asInt = xrunWindowRx;
+      xr[1].asInt = xrunWindowTx;
+      xr[2].asInt = xrunClashRx;
+      xr[3].asInt = xrunClashTx;
+#else
+      xr[0].asInt = 0;
+      xr[1].asInt = 0;
+      xr[2].asInt = 0;
+      xr[3].asInt = 0;
+#endif
+      /* pack BE byte order into linear buffer for streaming */
+      xrunOut[0]  = xr[0].asByte[3];
+      xrunOut[1]  = xr[0].asByte[2];
+      xrunOut[2]  = xr[0].asByte[1];
+      xrunOut[3]  = xr[0].asByte[0];
+      xrunOut[4]  = xr[1].asByte[3];
+      xrunOut[5]  = xr[1].asByte[2];
+      xrunOut[6]  = xr[1].asByte[1];
+      xrunOut[7]  = xr[1].asByte[0];
+      xrunOut[8]  = xr[2].asByte[3];
+      xrunOut[9]  = xr[2].asByte[2];
+      xrunOut[10] = xr[2].asByte[1];
+      xrunOut[11] = xr[2].asByte[0];
+      xrunOut[12] = xr[3].asByte[3];
+      xrunOut[13] = xr[3].asByte[2];
+      xrunOut[14] = xr[3].asByte[1];
+      xrunOut[15] = xr[3].asByte[0];
+      xrunOutIdx = 1;
+      byte = eGetXrunWindowRx0;
+      return xrunOut[0];
+    }
       break;
 
       // disabling until we know what's up with cycle counter
@@ -272,6 +313,29 @@ u8 spi_handle_byte(u8 rx) {
   case eModuleVersionRev1 :
     byte = eCom; // reset
     return 0;    // don't care
+    break;
+
+  case eGetXrunWindowRx0:
+  case eGetXrunWindowRx1:
+  case eGetXrunWindowRx2:
+  case eGetXrunWindowRx3:
+  case eGetXrunWindowTx0:
+  case eGetXrunWindowTx1:
+  case eGetXrunWindowTx2:
+  case eGetXrunWindowTx3:
+  case eGetXrunClashRx0:
+  case eGetXrunClashRx1:
+  case eGetXrunClashRx2:
+  case eGetXrunClashRx3:
+  case eGetXrunClashTx0:
+  case eGetXrunClashTx1:
+  case eGetXrunClashTx2:
+    byte++;
+    return xrunOut[xrunOutIdx++];
+    break;
+  case eGetXrunClashTx3:
+    byte = eCom;
+    return xrunOut[xrunOutIdx];
     break;
 
     /*

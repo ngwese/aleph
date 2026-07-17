@@ -31,6 +31,8 @@
 #define MSG_GET_AUDIO_CPU_COM           9
 // get param change CPU use (0 - 0x7fffffff)
 #define MSG_GET_CONTROL_CPU_COM         10
+// get block audio xrun counters (4 x u32: windowRx, windowTx, clashRx, clashTx)
+#define MSG_GET_XRUN_COM                11
 
 // enumerate state-machine nodes for sending and receiving SPI.
 
@@ -107,7 +109,25 @@ typedef enum {
   eGetControlCpuData0,
   eGetControlCpuData1,
   eGetControlCpuData2,
-  
+
+  // get block audio xrun counters (16 bytes after command returns first)
+  eGetXrunWindowRx0,
+  eGetXrunWindowRx1,
+  eGetXrunWindowRx2,
+  eGetXrunWindowRx3,
+  eGetXrunWindowTx0,
+  eGetXrunWindowTx1,
+  eGetXrunWindowTx2,
+  eGetXrunWindowTx3,
+  eGetXrunClashRx0,
+  eGetXrunClashRx1,
+  eGetXrunClashRx2,
+  eGetXrunClashRx3,
+  eGetXrunClashTx0,
+  eGetXrunClashTx1,
+  eGetXrunClashTx2,
+  eGetXrunClashTx3,
+
   eNumSpiBytes
 } eSpiByte;
 
