@@ -35,3 +35,9 @@ continuing with uninitialized state.
 ```text
 refactor(dsp): extract crossover coefficient helper
 ```
+
+## Markdown style
+
+Prefer lowercase for markdown you generate: titles, headers, sentences, and
+normal prose. Exceptions: common emphasis tokens like `FIXME` / `TODO`, and
+acronyms (e.g. DSP, SD, AVR32).
