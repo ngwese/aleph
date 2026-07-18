@@ -42,38 +42,38 @@ u8 spi_handle_byte(u8 rx) {
   case eCom :
     com = rx;
     switch(com) {
-    case MSG_SET_PARAM_COM:
+    case MSG_SET_PARAM_COM :
       byte = eSetParamIdx;
       break;
-    case MSG_GET_PARAM_COM:
+    case MSG_GET_PARAM_COM :
       byte = eGetParamIdx;
       break;
-    case MSG_GET_NUM_PARAMS_COM:
+    case MSG_GET_NUM_PARAMS_COM :
       byte = eNumParamsVal;
-      return gModuleData->numParams; // load num params
+      return gModuleData->numParams;  // load num params
       break;
-      
-    case MSG_GET_MODULE_NAME_COM:
+
+    case MSG_GET_MODULE_NAME_COM :
       byte = eModuleName0;
       return gModuleData->name[0];
       break;
 
-    case MSG_GET_MODULE_VERSION_COM:
+    case MSG_GET_MODULE_VERSION_COM :
       byte = eModuleVersionMaj;
       return MAJ;
       break;
 
-    case MSG_ENABLE_AUDIO:
+    case MSG_ENABLE_AUDIO :
       audio_reset_xruns();
       processAudio = 1;
       return processAudio;
       break;
-    case MSG_DISABLE_AUDIO:
+    case MSG_DISABLE_AUDIO :
       processAudio = 0;
       return processAudio;
       break;
 
-    case MSG_GET_XRUN_COM: {
+    case MSG_GET_XRUN_COM : {
       ParamValueSwap xr[4];
 #if MODULE_AUDIO_XRUN_DETECT
       xr[0].asInt = xrunWindowRx;
@@ -87,16 +87,16 @@ u8 spi_handle_byte(u8 rx) {
       xr[3].asInt = 0;
 #endif
       /* pack BE byte order into linear buffer for streaming */
-      xrunOut[0]  = xr[0].asByte[3];
-      xrunOut[1]  = xr[0].asByte[2];
-      xrunOut[2]  = xr[0].asByte[1];
-      xrunOut[3]  = xr[0].asByte[0];
-      xrunOut[4]  = xr[1].asByte[3];
-      xrunOut[5]  = xr[1].asByte[2];
-      xrunOut[6]  = xr[1].asByte[1];
-      xrunOut[7]  = xr[1].asByte[0];
-      xrunOut[8]  = xr[2].asByte[3];
-      xrunOut[9]  = xr[2].asByte[2];
+      xrunOut[0] = xr[0].asByte[3];
+      xrunOut[1] = xr[0].asByte[2];
+      xrunOut[2] = xr[0].asByte[1];
+      xrunOut[3] = xr[0].asByte[0];
+      xrunOut[4] = xr[1].asByte[3];
+      xrunOut[5] = xr[1].asByte[2];
+      xrunOut[6] = xr[1].asByte[1];
+      xrunOut[7] = xr[1].asByte[0];
+      xrunOut[8] = xr[2].asByte[3];
+      xrunOut[9] = xr[2].asByte[2];
       xrunOut[10] = xr[2].asByte[1];
       xrunOut[11] = xr[2].asByte[0];
       xrunOut[12] = xr[3].asByte[3];
@@ -106,8 +106,7 @@ u8 spi_handle_byte(u8 rx) {
       xrunOutIdx = 1;
       byte = eGetXrunWindowRx0;
       return xrunOut[0];
-    }
-      break;
+    } break;
 
       // disabling until we know what's up with cycle counter
       /*
@@ -128,7 +127,7 @@ u8 spi_handle_byte(u8 rx) {
       break;
       */
 
-    default:
+    default :
       break;
     }
     return 0;
@@ -136,39 +135,39 @@ u8 spi_handle_byte(u8 rx) {
 
     //---- set param
   case eSetParamIdx :
-    idx = rx; // set index
+    idx = rx;  // set index
     byte = eSetParamData0;
-    return 0; // dont care
+    return 0;  // dont care
     break;
   case eSetParamData0 :
     byte = eSetParamData1;
-    pval.asByte[3] = rx; // set paramval, byte-swap from BE on avr32
-    return 0; // don't care
+    pval.asByte[3] = rx;  // set paramval, byte-swap from BE on avr32
+    return 0;             // don't care
     break;
   case eSetParamData1 :
     byte = eSetParamData2;
-    pval.asByte[2] = rx; // set paramval
-    return 0; // don't care
+    pval.asByte[2] = rx;  // set paramval
+    return 0;             // don't care
     break;
   case eSetParamData2 :
     byte = eSetParamData3;
-    pval.asByte[1] = rx; // set paramval
-    return 0; // don't care
+    pval.asByte[1] = rx;  // set paramval
+    return 0;             // don't care
     break;
   case eSetParamData3 :
-    pval.asByte[0] = rx; // set paramval
+    pval.asByte[0] = rx;  // set paramval
     spi_set_param(idx, pval.asInt);
-    byte = eCom; //reset
-    return 0; // don't care
+    byte = eCom;  //reset
+    return 0;     // don't care
     break;
 
 
     //---- get param
   case eGetParamIdx :
-    idx = rx; // set index
+    idx = rx;  // set index
     byte = eGetParamData0;
     pval.asInt = gModuleData->paramData[idx].value;
-    return pval.asByte[3]; // byte-swap from BE on avr32
+    return pval.asByte[3];  // byte-swap from BE on avr32
     break;
   case eGetParamData0 :
     byte = eGetParamData1;
@@ -183,14 +182,14 @@ u8 spi_handle_byte(u8 rx) {
     return pval.asByte[0];
     break;
   case eGetParamData3 :
-    byte = eCom; //reset
-    return 0; // don't care
+    byte = eCom;  //reset
+    return 0;     // don't care
     break;
 
     //---- get num params
   case eNumParamsVal :
-    byte = eCom; //reset
-    return 0; // don't care 
+    byte = eCom;  //reset
+    return 0;     // don't care
     break;
 
 
@@ -288,21 +287,21 @@ u8 spi_handle_byte(u8 rx) {
     return gModuleData->name[23];
     break;
   case eModuleName23 :
-    byte = eCom; // reset
-    return 0;    // don't care
+    byte = eCom;  // reset
+    return 0;     // don't care
     break;
 
     //--- version
   case eModuleVersionMaj :
     byte = eModuleVersionMin;
-    return MIN; 
+    return MIN;
     break;
 
   case eModuleVersionMin :
     byte = eModuleVersionRev0;
     // patch (u16)
     // === byteswap for BE on avr32
-    return REV >> 8;  
+    return REV >> 8;
     break;
 
   case eModuleVersionRev0 :
@@ -311,29 +310,29 @@ u8 spi_handle_byte(u8 rx) {
     break;
 
   case eModuleVersionRev1 :
-    byte = eCom; // reset
-    return 0;    // don't care
+    byte = eCom;  // reset
+    return 0;     // don't care
     break;
 
-  case eGetXrunWindowRx0:
-  case eGetXrunWindowRx1:
-  case eGetXrunWindowRx2:
-  case eGetXrunWindowRx3:
-  case eGetXrunWindowTx0:
-  case eGetXrunWindowTx1:
-  case eGetXrunWindowTx2:
-  case eGetXrunWindowTx3:
-  case eGetXrunClashRx0:
-  case eGetXrunClashRx1:
-  case eGetXrunClashRx2:
-  case eGetXrunClashRx3:
-  case eGetXrunClashTx0:
-  case eGetXrunClashTx1:
-  case eGetXrunClashTx2:
+  case eGetXrunWindowRx0 :
+  case eGetXrunWindowRx1 :
+  case eGetXrunWindowRx2 :
+  case eGetXrunWindowRx3 :
+  case eGetXrunWindowTx0 :
+  case eGetXrunWindowTx1 :
+  case eGetXrunWindowTx2 :
+  case eGetXrunWindowTx3 :
+  case eGetXrunClashRx0 :
+  case eGetXrunClashRx1 :
+  case eGetXrunClashRx2 :
+  case eGetXrunClashRx3 :
+  case eGetXrunClashTx0 :
+  case eGetXrunClashTx1 :
+  case eGetXrunClashTx2 :
     byte++;
     return xrunOut[xrunOutIdx++];
     break;
-  case eGetXrunClashTx3:
+  case eGetXrunClashTx3 :
     byte = eCom;
     return xrunOut[xrunOutIdx];
     break;
@@ -367,9 +366,9 @@ u8 spi_handle_byte(u8 rx) {
     return pval.asByte[0];
     break;
     */
-    
-  default:
-    byte = eCom; // reset
+
+  default :
+    byte = eCom;  // reset
     return 0;
     break;
   }
