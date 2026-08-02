@@ -46,55 +46,88 @@ op_monome_t* monomeOpFocus = NULL;
 
 // set focus
 void net_monome_set_focus(op_monome_t* op_monome, u8 focus) {
+  // if we are not connected, don't do anything
+  if (!monomeConnect) {
+    print_dbg("\r\n net_monome_set_focus: not connected, skipping");
+    return;
+  }
+
+  // skip redundant focus requests
+  if ((monomeOpFocus == op_monome) && (*(op_monome->focus) == focus)) {
+    print_dbg("\r\n net_monome_set_focus: skipping redundant focus request");
+    return;
+  }
+
   eMonomeDevice dev = monome_device();
 
-  print_dbg("\r\n setting monome grid focus, op pointer: 0x");
+  print_dbg("\r\n net_monome_set_focus: setting focus, op pointer: 0x");
   print_dbg_hex((u32)op_monome);
   print_dbg(" , value: ");
   print_dbg_ulong(focus);
-
-  //// FIXME: differentiate on device type (grid/arc)
-
-  if(focus > 0) {
+ 
+  if (focus > 0) {
     // aha... set_focus is getting called twice in a row on scene load
-    /// (once on _init, once in _unpickle.)
-      // we don't want the second call to *unset* focus!
+    // (once on _init, once in _unpickle.)
+    // we don't want the second call to *unset* focus!
     //    if(monomeOpFocus != NULL ) {
-    if((monomeOpFocus != NULL) && (monomeOpFocus != op_monome)) {
+    if ((monomeOpFocus != NULL) && (monomeOpFocus != op_monome)) {
       /// stealing focus, inform the previous holder
+      print_dbg("\r\n net_monome_set_focus: stealing focus, informing previous holder");
       *(monomeOpFocus->focus) = 0;
+      monomeOpFocus = NULL;
     }
-    if(dev == eDeviceGrid) {
+
+    if (dev == eDeviceGrid) {
       print_dbg("\r\n setting grid_key handler");
       monome_grid_key_handler = op_monome->handler;
+      monome_ring_enc_handler = (monome_handler_t)&dummyHandler;
       monomeLedBuffer = op_monome->opLedBuffer;
+
       monome_set_quadrant_flag(0);
       monome_set_quadrant_flag(1);
-    } else if(dev == eDeviceArc) {
-      print_dbg("\r\n setting ring_enc handler");
-      monome_ring_enc_handler = op_monome->handler;
-    } else {
-      print_dbg("\r\n warning! requested focus, but no handler was set. "
-		" bad device type maybe?");
-      // aha... this is ending up here on default scene load. 
-      // maybe just a really gruesome delay in the monome comms, needs work 
-      // this is kind of bad, but just set both grid and arc handlers by default.
-      monome_grid_key_handler = op_monome->handler;
-      monome_ring_enc_handler = op_monome->handler;
+      monome_set_quadrant_flag(2);
+      monome_set_quadrant_flag(3);
+
+      monomeOpFocus = op_monome;
+      *(op_monome->focus) = 1;
     }
-    monomeOpFocus = op_monome;
-    *(op_monome->focus) = 1;
-  } else {
-    if(dev == eDeviceGrid) {
+    else if (dev == eDeviceArc) {
+      u8 i;
+      u8 nenc = monome_encs();
+      print_dbg("\r\n setting ring_enc handler");
+      monome_grid_key_handler = (monome_handler_t)&dummyHandler;
+      monome_ring_enc_handler = op_monome->handler;
+      monomeLedBuffer = op_monome->opLedBuffer;
+
+      for (i = 0; i < nenc; i++) {
+        monome_set_quadrant_flag(i);
+      }
+
+      monomeOpFocus = op_monome;
+      *(op_monome->focus) = 1;
+    }
+    else {
+      print_dbg("\r\n warning! requested focus, but unknown device type.");
+
+      // focus was requested but the device itself wasn't recognized, treat this as loss of focus
+      if (monomeOpFocus != NULL) {
+        print_dbg("\r\n net_monome_set_focus: unknown device, unfocus previous holder");
+        *(monomeOpFocus->focus) = 0;
+        monomeOpFocus = NULL;
+      }
+
+      monome_ring_enc_handler = (monome_handler_t)&dummyHandler;
       monome_grid_key_handler = (monome_handler_t)&dummyHandler;
       monomeLedBuffer = defaultLedBuffer;
-    } else if(dev == eDeviceArc) {
-      monome_ring_enc_handler = (monome_handler_t)&dummyHandler;
-    } else {
-      ;;
+      *(op_monome->focus) = 0;
     }
-    monomeOpFocus = NULL;
+  } else {
+    // this op is losing focus, unset the handler(s)
+    monome_grid_key_handler = (monome_handler_t)&dummyHandler;
+    monome_ring_enc_handler = (monome_handler_t)&dummyHandler;
+    monomeLedBuffer = defaultLedBuffer;
     *(op_monome->focus) = 0;
+    monomeOpFocus = NULL;
   }
 }
 
@@ -127,8 +160,10 @@ void net_monome_set_attributes() {
 }
 
 void net_monome_connect(void) {
+  print_dbg("\r\n net_monome_connect: enter");
   if(monomeConnect != 1) {
     monomeConnect = 1;
+    print_dbg("\r\n net_monome_connect: setting timers");
     timers_set_monome();
   } else {
     // already connected... oops?
@@ -140,5 +175,6 @@ void net_monome_connect(void) {
 void net_monome_disconnect(void) {
   print_dbg("\r\n net_monome_disconnect");
   monomeConnect = 0;
+  print_dbg("\r\n net_monome_disconnect: unsetting timers");
   timers_unset_monome();
 }
